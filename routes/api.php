@@ -17,4 +17,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
 
-Route::get('/get-templates', '');
+Route::get('/get-templates', 'MainController@getTemplates');

@@ -30,6 +30,24 @@ class MainController extends Controller
         echo "welcome, " . auth('frontend')->user()->username;
     }
 
+    public function getAllTemplates()
+    {
+        try {
+            $data = Topic::all();
+        } catch (\Exception $ex) {
+            return response([
+                'message' => 'error',
+                'status' => 0,
+                'data' => ''
+            ]);
+        }
+        return response([
+            'message' => 'success',
+            'status' => 1,
+            'data' => $data
+        ]);
+    }
+
     public function getTemplates($id)
     {
         try {
