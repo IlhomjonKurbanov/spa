@@ -33,7 +33,7 @@ class MainController extends Controller
     public function getAllTemplates()
     {
         try {
-            $data = Topic::all();
+            $data = Template::all();
         } catch (\Exception $ex) {
             return response([
                 'message' => 'error',
@@ -102,7 +102,7 @@ class MainController extends Controller
         ]);
     }
 
-    public function getAllScreen()
+    public function getAllScreens()
     {
         $data = Topic::all();
         return response([

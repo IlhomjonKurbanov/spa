@@ -17,4 +17,10 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
 
-Route::get('/get-templates', 'MainController@getTemplates');
+Route::get('/get-template/{id}', 'MainController@getTemplates');
+Route::get('/get-templates/', 'MainController@getAllTemplates');
+
+Route::get('/get-screen/{id}', 'MainController@getScreen');
+Route::get('/get-screens/', 'MainController@getAllScreens');
+Route::get('/get-screens-children/{id}', 'MainController@getScreenDescendant');
+
