@@ -22,6 +22,7 @@ class CreateMenuTable extends Migration
             $table->string('main')->nullable();
             $table->string('thumbnail')->nullable();
             $table->text('description')->nullable();
+            $table->integer('order')->unsigned()->default(1);
             $table->timestamps();
         });
     }

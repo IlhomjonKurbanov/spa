@@ -17,11 +17,11 @@ class CreateSubMenuTable extends Migration
         Schema::create('sub_menus', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->nullable();
-            $table->string('icon_sidebar')->nullable();
-            $table->string('icon_sidebar_hover')->nullable();
+            $table->string('icon')->nullable();
+            $table->string('icon_hover')->nullable();
             $table->string('main')->nullable();
-            $table->string('thumbnail')->nullable();
             $table->text('description')->nullable();
+            $table->integer('order')->unsigned()->default(1);
             $table->timestamps();
         });
     }

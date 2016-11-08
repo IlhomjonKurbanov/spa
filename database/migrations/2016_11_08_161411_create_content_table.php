@@ -35,5 +35,6 @@ class CreateContentTable extends Migration
     public function down()
     {
         //
+        Schema::drop('contents');
     }
 }
