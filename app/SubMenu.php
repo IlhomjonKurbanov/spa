@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SubMenu extends Model
 {
     //
-    protected $fillable = ['name', 'icon', 'icon_hover', 'main', 'description', 'order', 'status'];
+    protected $fillable = ['name', 'icon', 'icon_hover', 'main', 'description', 'order', 'status', 'parent'];
 
     protected $dates = ['created_at', 'updated_at'];
 }
