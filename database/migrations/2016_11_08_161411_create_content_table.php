@@ -17,12 +17,13 @@ class CreateContentTable extends Migration
         Schema::create('contents', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('menu')->nullable();
-            $table->integer('type')->nullable();
+            $table->integer('menu_type')->nullable();
             $table->text('content')->nullable();
             $table->string('icon')->nullable();
             $table->string('image')->nullable();
             $table->string('main')->nullable();
             $table->text('description')->nullable();
+            $table->integer('status')->unsigned()->default(1);
             $table->timestamps();
         });
     }
