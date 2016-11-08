@@ -18,6 +18,34 @@ class MenuController extends AdminController
         File::makeDirectory('Menu');
     }
 
+    public function getMenus()
+    {
+        $menus  = Menu::all();
+
+        return view('backend.menu.index', compact('menus'));
+    }
+
+    public function getSubMenus($menu)
+    {
+        $subMenus = SubMenu::where('parent', $menu)->get();
+
+        return view('backend.sub_menu.index', compact('subMenus'));
+    }
+
+    public function getMenuDetail($id)
+    {
+        $menu = Menu::find($id);
+
+        return view('backend.menu.detail', compact('menu'));
+    }
+
+    public function getSubMenuDetail($id)
+    {
+        $subMenu = SubMenu::find($id);
+
+        return view('backend.sub_menu.detail', compact('subMenu'));
+    }
+
     public function createMenu(Request $request)
     {
         $name = $request->input('name');
