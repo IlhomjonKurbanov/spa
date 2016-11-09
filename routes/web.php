@@ -22,6 +22,18 @@ Route::get('admin', 'Backend\HomeController@index');
 Route::get('test', 'Backend\MenuController@index');
 
 
+Route::get('list-menu', 'Backend\MenuController@getMenus');
+
+Route::get('list-sub-menu/{menu}', 'Backend\MenuController@getSubMenus');
+
+Route::get('create-menu', 'Backend\MenuController@createMenuView');
+
+Route::get('create-sub-menu/{menu}', 'Backend\MenuController@createSubMenuView');
+
+Route::post('create_menu_form', 'Backend\MenuController@createMenu');
+
+Route::post('create_sub_menu_form', 'Backend\MenuController@createSubMenu');
+
 Route::resource('admin/posts', 'Backend\PostsController');
 Route::resource('admin/categories', 'Backend\CategoriesController');
 

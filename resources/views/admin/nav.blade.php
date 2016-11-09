@@ -28,12 +28,32 @@
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item  ">
-                        <a href="ui_colors.html" class="nav-link ">
+                        <a href="{{url('list-menu')}}" class="nav-link ">
                             <span class="title">Danh sách</span>
                         </a>
                     </li>
                     <li class="nav-item  ">
-                        <a href="ui_metronic_grid.html" class="nav-link ">
+                        <a href="{{url('create-menu')}}" class="nav-link ">
+                            <span class="title">Thêm</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+            <li class="nav-item  ">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="icon-diamond"></i>
+                    <span class="title">Menu con</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item  ">
+                        <a href="{{url('list-sub-menu')}}" class="nav-link ">
+                            <span class="title">Danh sách</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="{{url('create-sub-menu')}}" class="nav-link ">
                             <span class="title">Thêm</span>
                         </a>
                     </li>
