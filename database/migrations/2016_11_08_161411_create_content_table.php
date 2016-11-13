@@ -21,6 +21,7 @@ class CreateContentTable extends Migration
             $table->text('content')->nullable();
             $table->string('icon')->nullable();
             $table->string('image')->nullable();
+            $table->string('name')->nullable();
             $table->string('main')->nullable();
             $table->text('description')->nullable();
             $table->integer('status')->unsigned()->default(1);

@@ -177,13 +177,6 @@ class MenuController extends AdminController
         $menu = $request->input('menu');
         $menuType = $request->input('menu_type');
 
-        $content = $request->input('content');
-
-
-        $icon =  ($request->file('icon') && $request->file('icon')->isValid()) ? $this->saveImage($request->file('icon')) : '';
-        $image =  ($request->file('icon_hover') && $request->file('image')->isValid()) ? $this->saveImage($request->file('image')) : '';
-        $main =  ($request->file('main') && $request->file('main')->isValid()) ? $this->saveImage($request->file('main')) : '';
-
         if(empty($menu))
         {
             return view('admin.content.index')->with('error', 'Thêm nội dung thất bại');
@@ -194,19 +187,74 @@ class MenuController extends AdminController
             return view('admin.content.index')->with('error', 'Thêm nội dung thất bại');
         }
 
+        $content = $request->input('content');
+        $name = $request->input('name');
+
+
+        $icon =  ($request->file('icon') && $request->file('icon')->isValid()) ? $this->saveImage($request->file('icon')) : '';
+        $main =  ($request->file('main') && $request->file('main')->isValid()) ? $this->saveImage($request->file('main')) : '';
+
+        $images = $request->input('images');
+
+        $countImages = count($images);
+
+        $imageLink = [];
+
+        $detailType = 0;
+
+        if($countImages == 0)
+        {
+            $detailType = 1;
+
+        } else if($countImages == 1)
+        {
+            $detailType = 2;
+
+            foreach ($images as $image)
+            {
+                $imageLink[] = $this->saveImage($image);
+            }
+
+
+        } else if($countImages > 1)
+        {
+            $detailType = 3;
+
+            foreach ($images as $image)
+            {
+                $imageLink[] = $this->saveImage($image);
+            }
+        }
+
         try {
             Content::create([
                 'menu' => $menu,
                 'menu_type' => $menuType,
                 'icon' => $icon,
-                'image' => $image,
+                'image' => json_encode($imageLink),
                 'main' => $main,
                 'content' => $content
             ]);
+
+            $content = [
+                'detailType' => $detailType,
+                'name' => $name,
+                'image' =>json_encode($imageLink),
+                'main' => $main,
+                'content' => $content,
+                'icon' => $icon,
+            ];
+
+          //  File::put(public_path('Menu/'.$menu.'/description.json'), json_encode($menuContent), true);
+           // File::put(public_path('Menu/'.$menu.'/'.$newOrder.'/description.json'), json_encode($content), true);
+
+
         } catch(\Exception $ex)
         {
             return view('admin.content.index')->with('error', 'Thêm nội dung thất bại');
         }
+
+
 
         return view('admin.content.index')->with('success', 'Thêm nội dung thành công');
     }
