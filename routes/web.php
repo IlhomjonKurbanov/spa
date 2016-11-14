@@ -26,13 +26,27 @@ Route::get('list-menu', 'Backend\MenuController@getMenus');
 
 Route::get('list-sub-menu/{menu}', 'Backend\MenuController@getSubMenus');
 
+Route::get('list-content/{menu}/{menuType}', 'Backend\MenuController@getContents');
+
 Route::get('create-menu', 'Backend\MenuController@createMenuView');
 
-Route::get('create-sub-menu/{menu}', 'Backend\MenuController@createSubMenuView');
+Route::get('view-menu/{id}', 'Backend\MenuController@getMenuDetail');
+
+Route::get('view-sub-menu/{id}', 'Backend\MenuController@getSubMenuDetail');
+
+Route::get('create-sub-menu/{menu}/{menuType}', 'Backend\MenuController@createSubMenuView');
+
+Route::get('create-content/{menu}/{menuType}', 'Backend\MenuController@createContentView');
 
 Route::post('create_menu_form', 'Backend\MenuController@createMenu');
 
+Route::post('update_menu_form', 'Backend\MenuController@updateMenu');
+
 Route::post('create_sub_menu_form', 'Backend\MenuController@createSubMenu');
+
+Route::post('update_sub_menu_form', 'Backend\MenuController@updateSubMenu');
+
+Route::post('create_content_form', 'Backend\MenuController@createContent');
 
 Route::resource('admin/posts', 'Backend\PostsController');
 Route::resource('admin/categories', 'Backend\CategoriesController');

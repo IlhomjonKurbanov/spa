@@ -1,7 +1,7 @@
 @extends('admin')
 
 @section('content')
-
+<h3>Danh sách menu con menu {{$parentMenu->name}}</h3>
     <table class="table table-striped table-bordered table-hover">
         <thead>
         <tr>
@@ -23,13 +23,23 @@
                 <td><img src="{{'/files/'.$menu->main}}" style="max-width: 250px" /></td>
                 <td>
                     <div class="btn-group">
-                        <button class="btn btn-xs blue dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Tạo nội dung
-                        </button>
+                        <a class="btn btn-xs blue dropdown-toggle" href="{{url('create-content', ['menu'=>$menu->id, 'menuType'=>2])}}"> Tạo nội dung
+                        </a>
 
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Sửa
-                        </button>
+                        <a class="btn btn-xs pink dropdown-toggle" href="{{url('create-sub-menu', ['menu' => $menu->id, 'menuType' => 2])}}"> Tạo menu con
+                        </a>
+
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-xs gray dropdown-toggle" href="{{url('list-content', ['menu'=>$menu->id, 'menuType'=>2])}}"> Xem nội dung
+                        </a>
+
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-xs green dropdown-toggle" href="{{url('view-sub-menu', ['id'=>$menu->id])}}" > Sửa
+                        </a>
                     </div>
                     <div class="btn-group">
                         <button class="btn btn-xs red dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Xóa

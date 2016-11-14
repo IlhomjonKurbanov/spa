@@ -40,27 +40,27 @@
 
                 </ul>
             </li>
-            <li class="nav-item  ">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-diamond"></i>
-                    <span class="title">Menu con</span>
-                    <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li class="nav-item  ">
-                        <a href="{{url('list-sub-menu')}}" class="nav-link ">
-                            <span class="title">Danh sách</span>
-                        </a>
-                    </li>
-                    <li class="nav-item  ">
-                        <a href="{{url('create-sub-menu')}}" class="nav-link ">
-                            <span class="title">Thêm</span>
-                        </a>
-                    </li>
+            {{--<li class="nav-item  ">--}}
+                {{--<a href="javascript:;" class="nav-link nav-toggle">--}}
+                    {{--<i class="icon-diamond"></i>--}}
+                    {{--<span class="title">Menu con</span>--}}
+                    {{--<span class="arrow"></span>--}}
+                {{--</a>--}}
+                {{--<ul class="sub-menu">--}}
+                    {{--<li class="nav-item  ">--}}
+                        {{--<a href="{{url('list-sub-menu')}}" class="nav-link ">--}}
+                            {{--<span class="title">Danh sách</span>--}}
+                        {{--</a>--}}
+                    {{--</li>--}}
+                    {{--<li class="nav-item  ">--}}
+                        {{--<a href="{{url('create-sub-menu')}}" class="nav-link ">--}}
+                            {{--<span class="title">Thêm</span>--}}
+                        {{--</a>--}}
+                    {{--</li>--}}
 
-                </ul>
-            </li>
-            <li class="nav-item start active open">
+                {{--</ul>--}}
+            {{--</li>--}}
+            <li class="nav-item">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="icon-home"></i>
                     <span class="title">Intro</span>
@@ -77,12 +77,12 @@
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item  ">
-                        <a href="{{url('thong-tin-ca-nhan')}}" class="nav-link ">
+                        <a href="{{url('list-video')}}" class="nav-link ">
                             <span class="title">Danh sách</span>
                         </a>
                     </li>
                     <li class="nav-item  ">
-                        <a href="components_color_pickers.html" class="nav-link ">
+                        <a href="{{url('create-video')}}" class="nav-link ">
                             <span class="title">Thêm</span>
                         </a>
                     </li>

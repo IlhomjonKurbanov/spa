@@ -25,7 +25,24 @@ class MenuController extends AdminController
     {
         $subMenus = SubMenu::where('parent', $menu)->get();
 
-        return view('admin.sub_menu.index', compact('subMenus'));
+        $parentMenu = Menu::find($menu);
+
+        return view('admin.sub_menu.index', compact('subMenus', 'parentMenu'));
+    }
+
+    public function getContents($menu, $menuType)
+    {
+        $contents = Content::where('menu', $menu)->where('menu_type', $menuType)->get();
+
+        if ($menuType == 1)
+        {
+            $parentMenu = Menu::find($menu);
+        } else if ($menuType == 2)
+        {
+            $parentMenu = SubMenu::find($menu);
+        }
+
+        return view('admin.content.list', compact('contents', 'parentMenu', 'menuType'));
     }
 
     public function getMenuDetail($id)
@@ -37,9 +54,9 @@ class MenuController extends AdminController
 
     public function getSubMenuDetail($id)
     {
-        $subMenu = SubMenu::find($id);
+        $menu = SubMenu::find($id);
 
-        return view('admin.sub_menu.detail', compact('subMenu'));
+        return view('admin.sub_menu.detail', compact('menu'));
     }
 
     public function createMenuView()
@@ -50,6 +67,11 @@ class MenuController extends AdminController
     public function createSubMenuView($menu)
     {
         return view('admin.sub_menu.create', ['menu' => $menu]);
+    }
+
+    public function createContentView($menu, $menuType)
+    {
+        return view('admin.content.create', ['menu' => $menu, 'menuType' => $menuType]);
     }
 
     public function createMenu(Request $request)
@@ -179,12 +201,12 @@ class MenuController extends AdminController
 
         if(empty($menu))
         {
-            return view('admin.content.index')->with('error', 'Thêm nội dung thất bại');
+            return view('admin.content.create',  ['menu'=>$menu, 'menuType'=>$menuType])->with('error', 'Thêm nội dung thất bại');
         }
 
         if(empty($menuType))
         {
-            return view('admin.content.index')->with('error', 'Thêm nội dung thất bại');
+            return view('admin.content.create',  ['menu'=>$menu, 'menuType'=>$menuType])->with('error', 'Thêm nội dung thất bại');
         }
 
         $content = $request->input('content');
@@ -194,7 +216,7 @@ class MenuController extends AdminController
         $icon =  ($request->file('icon') && $request->file('icon')->isValid()) ? $this->saveImage($request->file('icon')) : '';
         $main =  ($request->file('main') && $request->file('main')->isValid()) ? $this->saveImage($request->file('main')) : '';
 
-        $images = $request->input('images');
+        $images = $request->file('images');
 
         $countImages = count($images);
 
@@ -245,22 +267,31 @@ class MenuController extends AdminController
                 'icon' => $icon,
             ];
 
-          //  File::put(public_path('Menu/'.$menu.'/description.json'), json_encode($menuContent), true);
-           // File::put(public_path('Menu/'.$menu.'/'.$newOrder.'/description.json'), json_encode($content), true);
+            $order = Content::where('menu', $menu)->where('menu_type', $menuType)->count();
+
+
+            if($menuType == 1) {
+                File::put(public_path('Menu/' . $menu . '/description.json'), json_encode($content), true);
+            } else if ($menuType == 2)
+            {
+                File::put(public_path('Menu/' . $menu . '/description.json'), json_encode($content), true);
+            }
+          //  File::put(public_path('Menu/'.$menu.'/'.$newOrder.'/description.json'), json_encode($content), true);
 
 
         } catch(\Exception $ex)
         {
-            return view('admin.content.index')->with('error', 'Thêm nội dung thất bại');
+            return view('admin.content.create',  ['menu'=>$menu, 'menuType'=>$menuType])->with('error', 'Thêm nội dung thất bại');
         }
 
 
 
-        return view('admin.content.index')->with('success', 'Thêm nội dung thành công');
+        return view('admin.content.create', ['menu'=>$menu, 'menuType'=>$menuType])->with('success', 'Thêm nội dung thành công');
     }
 
-    public function updateMenu($id, Request $request)
+    public function updateMenu(Request $request)
     {
+        $id = $request->input('id');
         $menu = Menu::find($id);
 
         $data['name'] = $request->input('name');
@@ -286,14 +317,14 @@ class MenuController extends AdminController
             File::makeDirectory(public_path('Menu/'.$order));
         }
 
-        $childMenus = Menu::where('parent', $id)->where('menu_type', 'menu')->get();
+        $childMenus = SubMenu::where('parent', $id)->get();
 
         $childNumber = $childMenus->count();
 
         $childNames = $childMenus->pluck('name')->all();
 
         try {
-            $updatedMenu = $menu->update($data);
+            $menu->update($data);
 
             $content = [
                 'type' => 'menu',
@@ -303,10 +334,12 @@ class MenuController extends AdminController
 
             ];
 
+            $updatedMenu = Menu::find($id);
+
             $icon_sidebar = $updatedMenu->icon_sidebar;
             $icon_sidebar_hover = $updatedMenu->icon_sidebar_hover;
             $main = $updatedMenu->main;
-            $thumb = $updatedMenu->thumb;
+            $thumb = $updatedMenu->thumbnail;
 
             File::put(public_path('Menu/'.$order.'/description.json'), json_encode($content), true);
 
@@ -318,16 +351,18 @@ class MenuController extends AdminController
 
         } catch(\Exception $ex)
         {
-            return view('admin.menu.index')->with('error', 'Cập nhật menu thất bại');
+            return redirect()->back()->with('error', 'Cập nhật menu thất bại');
         }
 
-        return view('admin.menu.index')->with('success', 'Cập nhật menu thành công');
+        return redirect()->back()->with('success', 'Cập nhật menu thành công');
 
     }
 
-    public function updateSubMenu($id, Request $request)
+    public function updateSubMenu(Request $request)
     {
-        $menu = $request->input('menu');
+        $menu = $request->input('id');
+
+
 
         if(empty($menu))
         {
@@ -345,13 +380,15 @@ class MenuController extends AdminController
 
         $newOrder = $maxCurrentOrder + 1;
 
+        $subMenu = SubMenu::find($menu);
+
         if (!File::exists('Menu/'.$menu.'/'.$newOrder))
         {
             File::makeDirectory('Menu/'.$menu.'/'.$newOrder);
         }
 
         try {
-            SubMenu::create([
+            $subMenu->update([
                 'name' => $name,
                 'icon' => $icon,
                 'icon_hover' => $icon_hover,
@@ -385,10 +422,10 @@ class MenuController extends AdminController
 
         } catch(\Exception $ex)
         {
-            return view('admin.menu.index')->with('error', 'Thêm menu con thất bại');
+            return redirect()->back()->with('error', 'Cập nhật menu thất bại');
         }
 
-        return view('admin.sub_menu.index')->with('success', 'Thêm menu con thành công');
+        return redirect()->back()->with('success', 'Cập nhật menu thành công');
 
     }
 
@@ -408,6 +445,11 @@ class MenuController extends AdminController
     }
 
     public function deleteContent($id)
+    {
+
+    }
+
+    public function createVideo()
     {
 
     }
