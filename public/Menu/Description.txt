@@ -1,1 +1,1 @@
-{"type":"menu","name":"","childNumber":5,"childNames":{"1":"","2":"","3":"test","4":"","5":"Test 2"}}
+{"layoutType":3,"name":null,"image":"[\"223e7ff2d2582d19c4bf406b70d67d02icon-hoverpng.png\",\"223e7ff2d2582d19c4bf406b70d67d02mainpng.png\"]","main":"02dc1822c9fc743ff187c196661437dfmainpng.png","content":"ttt","icon":"02dc1822c9fc743ff187c196661437dficonpng.png","type":"detail"}

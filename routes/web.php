@@ -58,3 +58,7 @@ Route::get('login', 'Frontend\AuthController@redirectToAuthServer');
 Route::get('logout', 'Frontend\AuthController@logout');
 Route::get('callback', 'Frontend\AuthController@callback');
 
+Route::get('test', function() {
+    dd(\App\Garena\Functions::getMenuRecursive(10));
+});
+
