@@ -24,7 +24,7 @@ Route::get('test', 'Backend\MenuController@index');
 
 Route::get('list-menu', 'Backend\MenuController@getMenus');
 
-Route::get('list-sub-menu/{menu}', 'Backend\MenuController@getSubMenus');
+Route::get('list-sub-menu/{menu}/{menuType}', 'Backend\MenuController@getSubMenus');
 
 Route::get('list-content/{menu}/{menuType}', 'Backend\MenuController@getContents');
 

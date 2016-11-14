@@ -19,10 +19,17 @@
             <tr>
                 <td>{{$menu->order}}</td>
                 <td>{{$menu->name}}</td>
-                <td><img src="{{'files/'.$menu->icon_sidebar}}" style="max-width: 250px" /></td>
-                <td><img src="{{'files/'.$menu->icon_sidebar_hover}}" style="max-width: 250px" /></td>
-                <td><img src="{{'files/'.$menu->main}}" style="max-width: 250px" /></td>
-                <td><img src="{{'files/'.$menu->thumbnail}}" style="max-width: 250px" /></td>
+                <td>
+                    @if(!empty($menu->icon_sidebar))
+                    <img src="{{'files/'.$menu->icon_sidebar}}" style="max-width: 150px" />
+                        @endif
+                </td>
+                <td> @if(!empty($menu->icon_sidebar_hover))
+                    <img src="{{'files/'.$menu->icon_sidebar_hover}}" style="max-width: 150px" />
+                @endif</td>
+                <td>
+                    @if(!empty($menu->main))<img src="{{'files/'.$menu->main}}" style="max-width: 150px" />@endif</td>
+                <td> @if(!empty($menu->thumbnail))<img src="{{'files/'.$menu->thumbnail}}" style="max-width: 150px" />@endif</td>
                 <td>
                     <div class="row">
                         <div class="col-md-12">
@@ -32,7 +39,7 @@
 
                     </div>
                     <div class="btn-group">
-                        <a href="{{url('list-sub-menu', ['menu' => $menu->id])}}" class="btn btn-xs orange dropdown-toggle"> Xem danh sách menu con
+                        <a href="{{url('list-sub-menu', ['menu' => $menu->id, 'menuType' => 1])}}" class="btn btn-xs orange dropdown-toggle"> Xem danh sách menu con
                         </a>
 
                     </div>
@@ -41,10 +48,10 @@
 
                     <div class="row" style="margin-top: 20px">
                         <div class="col-md-12">
-                    <div class="btn-group">
-                        <button class="btn btn-xs gray dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Tạo nội dung
-                        </button>
-                    </div>
+                    {{--<div class="btn-group">--}}
+                        {{--<button class="btn btn-xs gray dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Tạo nội dung--}}
+                        {{--</button>--}}
+                    {{--</div>--}}
                             <div class="btn-group">
                                 <a class="btn btn-xs gray dropdown-toggle" href="{{url('list-content', ['menu'=>$menu->id, 'menuType'=>1])}}"> Xem nội dung
                                 </a>

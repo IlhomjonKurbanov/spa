@@ -18,12 +18,21 @@
             <tr>
                 <td>{{$menu->order}}</td>
                 <td>{{$menu->name}}</td>
-                <td><img src="{{'/files/'.$menu->icon}}" style="max-width: 250px" /></td>
-                <td><img src="{{'/files/'.$menu->icon_hover}}" style="max-width: 250px" /></td>
-                <td><img src="{{'/files/'.$menu->main}}" style="max-width: 250px" /></td>
+                <td>
+                @if(!empty($menu->icon))
+                    <img src="{{'/files/'.$menu->icon}}" style="max-width: 250px" />
+                    @endif
+                </td>
+                <td>@if(!empty($menu->icon_hover))<img src="{{'/files/'.$menu->icon_hover}}" style="max-width: 250px" />@endif</td>
+                <td>@if(!empty($menu->main))<img src="{{'/files/'.$menu->main}}" style="max-width: 250px" />@endif</td>
                 <td>
                     <div class="btn-group">
                         <a class="btn btn-xs blue dropdown-toggle" href="{{url('create-content', ['menu'=>$menu->id, 'menuType'=>2])}}"> Tạo nội dung
+                        </a>
+
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-xs gray dropdown-toggle" href="{{url('list-content', ['menu'=>$menu->id, 'menuType'=>2])}}"> Xem nội dung
                         </a>
 
                     </div>
@@ -33,10 +42,11 @@
 
                     </div>
                     <div class="btn-group">
-                        <a class="btn btn-xs gray dropdown-toggle" href="{{url('list-content', ['menu'=>$menu->id, 'menuType'=>2])}}"> Xem nội dung
+                        <a class="btn btn-xs pink dropdown-toggle" href="{{url('list-sub-menu', ['menu' => $menu->id, 'menuType' => 2])}}"> Xem menu con
                         </a>
 
                     </div>
+
                     <div class="btn-group">
                         <a class="btn btn-xs green dropdown-toggle" href="{{url('view-sub-menu', ['id'=>$menu->id])}}" > Sửa
                         </a>

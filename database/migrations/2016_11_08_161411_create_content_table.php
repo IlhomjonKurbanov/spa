@@ -18,6 +18,7 @@ class CreateContentTable extends Migration
             $table->increments('id');
             $table->integer('menu')->nullable();
             $table->integer('menu_type')->nullable();
+            $table->text('title')->nullable();
             $table->text('content')->nullable();
             $table->string('icon')->nullable();
             $table->string('image')->nullable();

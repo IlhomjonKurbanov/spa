@@ -24,6 +24,7 @@ class CreateSubMenuTable extends Migration
             $table->integer('order')->unsigned()->default(1);
             $table->integer('status')->unsigned()->default(1);
             $table->integer('parent')->nullable();
+            $table->integer('parent_type')->nullable();
             $table->timestamps();
         });
     }
