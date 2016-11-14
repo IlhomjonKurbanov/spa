@@ -24,6 +24,7 @@
                 </div>
             </div>
             <input type="hidden" value="{{$menu}}" name="menu"/>
+            <input type="hidden" value="{{$menuType}}" name="menuType"/>
 
             <div class="form-group">
                 <label class="control-label col-md-3">Icon</label>

@@ -64,9 +64,9 @@ class MenuController extends AdminController
         return view('admin.menu.create');
     }
 
-    public function createSubMenuView($menu)
+    public function createSubMenuView($menu, $menuType)
     {
-        return view('admin.sub_menu.create', ['menu' => $menu]);
+        return view('admin.sub_menu.create', ['menu' => $menu, 'menuType'=> $menuType]);
     }
 
     public function createContentView($menu, $menuType)
@@ -130,6 +130,8 @@ class MenuController extends AdminController
     public function createSubMenu(Request $request)
     {
         $menu = $request->input('menu');
+        $menuType = $request->input('menuType');
+
 
         if(empty($menu))
         {
