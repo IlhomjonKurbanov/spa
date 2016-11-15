@@ -20,11 +20,11 @@
                 <td>{{$menu->name}}</td>
                 <td>
                 @if(!empty($menu->icon))
-                    <img src="{{'/files/'.$menu->icon}}" style="max-width: 250px" />
+                    <img src="{{'/files/'.$menu->icon}}" style="max-width: 150px" />
                     @endif
                 </td>
-                <td>@if(!empty($menu->icon_hover))<img src="{{'/files/'.$menu->icon_hover}}" style="max-width: 250px" />@endif</td>
-                <td>@if(!empty($menu->main))<img src="{{'/files/'.$menu->main}}" style="max-width: 250px" />@endif</td>
+                <td>@if(!empty($menu->icon_hover))<img src="{{'/files/'.$menu->icon_hover}}" style="max-width: 150px" />@endif</td>
+                <td>@if(!empty($menu->main))<img src="{{'/files/'.$menu->main}}" style="max-width: 150px" />@endif</td>
                 <td>
                     <div class="btn-group">
                         <a class="btn btn-xs blue dropdown-toggle" href="{{url('create-content', ['menu'=>$menu->id, 'menuType'=>2])}}"> Tạo nội dung

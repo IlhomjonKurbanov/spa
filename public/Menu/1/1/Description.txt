@@ -1,0 +1,1 @@
+{"layoutType":1,"name":null,"image":"[]","main":"39f92f00023605dc99df7e9ffd22d36bmainpng.png","content":"N\u1ed9i dung 1","icon":"39f92f00023605dc99df7e9ffd22d36biconpng.png","type":"detail"}

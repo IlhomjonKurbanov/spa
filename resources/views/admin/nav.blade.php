@@ -60,13 +60,25 @@
 
                 {{--</ul>--}}
             {{--</li>--}}
-            <li class="nav-item">
+            <li class="nav-item  ">
                 <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-home"></i>
+                    <i class="icon-diamond"></i>
                     <span class="title">Intro</span>
-                    <span class="selected"></span>
-                    <span class="arrow open"></span>
+                    <span class="arrow"></span>
                 </a>
+                <ul class="sub-menu">
+                    <li class="nav-item  ">
+                        <a href="{{url('list-intro')}}" class="nav-link ">
+                            <span class="title">Danh sách</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="{{url('create-intro')}}" class="nav-link ">
+                            <span class="title">Thêm</span>
+                        </a>
+                    </li>
+
+                </ul>
             </li>
 
             <li class="nav-item  ">

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use Illuminate\Http\Request;
+use Chumper\Zipper\Zipper;
+use File;
 
 class AdminController extends Controller
 {
@@ -33,9 +35,9 @@ class AdminController extends Controller
         return $filename;
     }
 
-    public function checkCurrentStatus()
+    public function checkCurrentVersion()
     {
-        $status = cache()->get('app-status');
+        $status = cache()->get('app-version');
 
         return response([
            'status' => 1,
@@ -43,12 +45,33 @@ class AdminController extends Controller
         ]);
     }
 
-    public function updateStatus(Request $request)
+    public function makeZip()
     {
-        $status = $request->input('status');
+        if(!cache()->has('version'))
+        {
+            cache()->forever('app-version', '1');
+        } else {
+            $oldVersion = cache()->get('app-version');
 
-        cache()->forget('app-status');
+            cache()->forever('app-version', $oldVersion + 1);
+        }
 
-        cache()->forever('app-status', $status);
+        $files = glob(public_path('Menu/*'));
+        $zipper = new Zipper();
+        $zipper->make(public_path('Menu.zip'))->add($files);
+
+        return response([
+            'status' => 1,
+            'message' => 'Zip thành công'
+        ]);
+    }
+
+    public function zipAndReturnFile()
+    {
+        if(File::exists(public_path('Menu.zip')))
+        {
+            return response()->download(public_path('Menu.zip'));
+        }
+
     }
 }

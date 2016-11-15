@@ -18,7 +18,7 @@
                 <td>{{$video->order}}</td>
                 <td>{{$video->name}}</td>
                 <td>{{$video->link}}</td>
-                <td><img src="{{'/files/'.$video->image}}" style="max-width: 250px" /></td>
+                <td><img src="{{'/files/'.$video->image}}" style="max-width: 150px" /></td>
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Sửa

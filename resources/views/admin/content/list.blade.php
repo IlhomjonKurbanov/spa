@@ -26,15 +26,15 @@
                     @php $images = $content->image @endphp
 
                     @foreach($images as $image)
-                    <img src="{{'/files/'.$image }}" style="max-width: 250px" />
+                    <img src="{{'/files/'.$image }}" style="max-width: 150px" />
                     @endforeach
 
 
                 </td>
 
 
-                <td><img src="{{'/files/'.$content->icon}}" style="max-width: 250px" /></td>
-                <td><img src="{{'/files/'.$content->main}}" style="max-width: 250px" /></td>
+                <td><img src="{{'/files/'.$content->icon}}" style="max-width: 150px" /></td>
+                <td><img src="{{'/files/'.$content->main}}" style="max-width: 150px" /></td>
                 <td>{{'Menu: '.$content->parentMenu['menu']->name .', loại: '.$content->parentMenu['menu_type']}}<br>
                     @if($content->menu_type == 1)
                     <a class="btn btn-xs red dropdown-toggle" href="{{ url('view-menu', ['id'=>$content->menu]) }}"> Xem menu

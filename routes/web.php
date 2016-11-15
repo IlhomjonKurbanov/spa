@@ -17,12 +17,26 @@ Route::get('admin/logout', 'Backend\AuthController@logout');
 Route::get('admin/callback', 'Backend\AuthController@handleGoogleCallback');
 
 
-Route::get('admin', 'Backend\HomeController@index');
+Route::get('/', 'Backend\HomeController@index');
 
 Route::get('test', 'Backend\MenuController@index');
 
 
 Route::get('list-menu', 'Backend\MenuController@getMenus');
+
+Route::get('list-video', 'Backend\VideoController@getVideos');
+
+Route::get('create-video', function (){
+    return view('admin.video.create');
+});
+
+Route::get('list-intro', function (){
+    return view('admin.intro.list');
+});
+
+Route::get('create-intro', function (){
+    return view('admin.intro.create');
+});
 
 Route::get('list-sub-menu/{menu}/{menuType}', 'Backend\MenuController@getSubMenus');
 
@@ -44,6 +58,8 @@ Route::post('update_menu_form', 'Backend\MenuController@updateMenu');
 
 Route::post('create_sub_menu_form', 'Backend\MenuController@createSubMenu');
 
+Route::post('create_video_form', 'Backend\VideoController@createVideo');
+
 Route::post('update_sub_menu_form', 'Backend\MenuController@updateSubMenu');
 
 Route::post('create_content_form', 'Backend\MenuController@createContent');
@@ -52,11 +68,19 @@ Route::resource('admin/posts', 'Backend\PostsController');
 Route::resource('admin/categories', 'Backend\CategoriesController');
 
 #Frontend Routes
-Route::get('/', 'Frontend\MainController@index');
+//Route::get('/', 'Frontend\MainController@index');
 Route::get('home', 'Frontend\MainController@home');
 Route::get('login', 'Frontend\AuthController@redirectToAuthServer');
 Route::get('logout', 'Frontend\AuthController@logout');
 Route::get('callback', 'Frontend\AuthController@callback');
+
+Route::get('make-zip', 'Backend\AdminController@makeZip');
+
+
+
+Route::get('get-version', 'Backend\AdminController@checkCurrentVersion');
+
+Route::get('get-zip', 'Backend\AdminController@zipAndReturnFile');
 
 Route::get('test', function() {
     dd(\App\Garena\Functions::getMenuRecursive(10));

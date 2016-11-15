@@ -10,4 +10,6 @@ class HomeController extends AdminController
        return view('admin.index');
     }
 
+
+
 }

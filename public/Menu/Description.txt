@@ -1,1 +1,1 @@
-{"layoutType":3,"name":null,"image":"[\"223e7ff2d2582d19c4bf406b70d67d02icon-hoverpng.png\",\"223e7ff2d2582d19c4bf406b70d67d02mainpng.png\"]","main":"02dc1822c9fc743ff187c196661437dfmainpng.png","content":"ttt","icon":"02dc1822c9fc743ff187c196661437dficonpng.png","type":"detail"}
+{"type":"menu","name":"","childNumber":1,"childNames":{"1":"Menu 1"}}
