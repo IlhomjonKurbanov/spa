@@ -1,6 +1,12 @@
 @extends('admin')
 
 @section('content')
+    @if (session()->has('error'))
+        <div class="alert alert-error">{{ session()->get('error') }}</div>
+    @endif
+    @if (session()->has('success'))
+        <div class="alert alert-success">{{ session()->get('success') }}</div>
+    @endif
 <h3>Danh sách menu con menu {{$parentMenu->name}}</h3>
     <table class="table table-striped table-bordered table-hover">
         <thead>
@@ -52,7 +58,7 @@
                         </a>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-xs red dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Xóa
+                        <button class="btn btn-xs red dropdown-toggle" type="button" onclick="deleteSubMenu({{$menu->id}})"> Xóa
                         </button>
 
                     </div>
@@ -62,5 +68,21 @@
             @endforeach
         </tbody>
     </table>
+
+    @push('scripts')
+    <script>
+
+        var baseUrl = '{{url('/')}}';
+
+        function deleteSubMenu(id)
+        {
+            if (confirm("Bạn có chắc chắn muốn xóa menu con ?")) {
+                window.location.href = baseUrl+'/delete-sub-menu/'+id;
+            }
+            return false;
+
+        }
+    </script>
+    @endpush
 
 @endsection

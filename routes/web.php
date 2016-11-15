@@ -48,6 +48,11 @@ Route::get('view-menu/{id}', 'Backend\MenuController@getMenuDetail');
 
 Route::get('view-sub-menu/{id}', 'Backend\MenuController@getSubMenuDetail');
 
+Route::get('view-content/{id}', 'Backend\MenuController@getContentDetail');
+
+
+Route::get('view-video/{id}', 'Backend\VideoController@getVideoDetail');
+
 Route::get('create-sub-menu/{menu}/{menuType}', 'Backend\MenuController@createSubMenuView');
 
 Route::get('create-content/{menu}/{menuType}', 'Backend\MenuController@createContentView');
@@ -56,6 +61,10 @@ Route::post('create_menu_form', 'Backend\MenuController@createMenu');
 
 Route::post('update_menu_form', 'Backend\MenuController@updateMenu');
 
+Route::post('update_video_form', 'Backend\VideoController@updateVideo');
+
+Route::post('update_content_form', 'Backend\MenuController@updateContent');
+
 Route::post('create_sub_menu_form', 'Backend\MenuController@createSubMenu');
 
 Route::post('create_video_form', 'Backend\VideoController@createVideo');
@@ -63,6 +72,14 @@ Route::post('create_video_form', 'Backend\VideoController@createVideo');
 Route::post('update_sub_menu_form', 'Backend\MenuController@updateSubMenu');
 
 Route::post('create_content_form', 'Backend\MenuController@createContent');
+
+Route::get('delete-content/{id}', 'Backend\MenuController@deleteContent');
+
+Route::get('delete-menu/{id}', 'Backend\MenuController@deleteMenu');
+
+Route::get('delete-sub-menu/{id}', 'Backend\MenuController@deleteSubMenu');
+
+Route::get('delete-video/{id}', 'Backend\VideoController@deleteVideo');
 
 Route::resource('admin/posts', 'Backend\PostsController');
 Route::resource('admin/categories', 'Backend\CategoriesController');

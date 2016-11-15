@@ -1,6 +1,12 @@
 @extends('admin')
 
 @section('content')
+    @if (session()->has('error'))
+        <div class="alert alert-error">{{ session()->get('error') }}</div>
+    @endif
+    @if (session()->has('success'))
+        <div class="alert alert-success">{{ session()->get('success') }}</div>
+    @endif
 
     <table class="table table-striped table-bordered table-hover">
         <thead>
@@ -62,7 +68,7 @@
                         </a>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-xs red dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Xóa
+                        <button class="btn btn-xs red dropdown-toggle" type="button" onclick="deleteMenu({{$menu->id}})"> Xóa
                         </button>
 
                     </div>
@@ -73,5 +79,21 @@
             @endforeach
         </tbody>
     </table>
+
+    @push('scripts')
+    <script>
+
+        var baseUrl = '{{url('/')}}';
+
+        function deleteMenu(id)
+        {
+            if (confirm("Bạn có chắc chắn muốn xóa menu ?")) {
+                window.location.href = baseUrl+'/delete-menu/'+id;
+            }
+            return false;
+
+        }
+    </script>
+    @endpush
 
 @endsection

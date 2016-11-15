@@ -40,7 +40,7 @@ class Functions
        $subMenu = SubMenu::where('id', $menu)->first();
 
 
-       self::$resultMenuRecursive = self::$resultMenuRecursive.'/'.  $subMenu->order;
+       self::$resultMenuRecursive = $subMenu->order. '/'. self::$resultMenuRecursive;
 
        if($subMenu->parent_type == 2) {
 
@@ -48,9 +48,9 @@ class Functions
            self::$resultMenuRecursive = $parentOrder->order . '/' . self::$resultMenuRecursive;
            self::getMenuRecursive($parentOrder->id);
        } else {
-           $result = self::$resultMenuRecursive = $subMenu->parent . '/' . self::$resultMenuRecursive;
-           self::$resultMenuRecursive = '';
-           return $result;
+        //   $result = self::$resultMenuRecursive = $subMenu->parent . '/' . self::$resultMenuRecursive;
+          // self::$resultMenuRecursive = '';
+           return self::$resultMenuRecursive;
        }
    }
 }

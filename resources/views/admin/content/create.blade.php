@@ -40,7 +40,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group last">
                     <label class="control-label col-md-3">Icon</label>
                     <div class="col-md-9">
                         <div class="fileinput fileinput-new" data-provides="fileinput">

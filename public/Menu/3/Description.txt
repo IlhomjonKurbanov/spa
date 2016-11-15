@@ -1,1 +1,1 @@
-{"type":"menu","name":"test","childNumber":0,"childNames":""}
+{"type":"menu","name":"test","childNumber":0,"childNames":[]}

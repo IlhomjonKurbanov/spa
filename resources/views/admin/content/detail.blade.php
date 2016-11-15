@@ -14,26 +14,34 @@
                 <span class="caption-subject font-green sbold uppercase">Cập nhật nội dung</span>
             </div>
         </div>
-        <form action="{{url('create_content_form')}}" class="form-horizontal form-bordered" method="POST" enctype="multipart/form-data">
+        <form action="{{url('update_content_form')}}" class="form-horizontal form-bordered" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-body">
                 <div class="form-group">
                     <label class="col-md-3 control-label">Tên</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="name" placeholder="Điền tên của menu con">
+                        <input type="text" class="form-control" name="name" placeholder="Điền tên của menu con" value="{{$content->name}}">
                     </div>
                 </div>
-                <input type="hidden" value="{{$menu}}" name="menu"/>
-                <input type="hidden" value="{{$menuType}}" name="menu_type"/>
+                <input type="hidden" name="id" value="{{$content->id}}" >
+
 
                 <div class="form-group">
                     <label class="col-md-3 control-label">Nội dung</label>
                     <div class="col-md-4">
-                        <textarea type="text" class="form-control" name="content"></textarea>
+                        <textarea type="text" class="form-control" name="content">{{$content->content}}</textarea>
                     </div>
                 </div>
 
                 <div class="form-group">
+                    @php $images = $content->image @endphp
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-3">
+                    @foreach($images as $image)
+                        <img src="{{'/files/'.$image }}" style="max-width: 150px" />
+                    @endforeach
+                            </div>
+                        </div>
                     <label class="col-md-3 control-label">Ảnh (có thể upload nhiều ảnh)</label>
                     <div class="col-md-4">
                         <input type="file" class="form-control" name="images[]" multiple>
@@ -45,7 +53,7 @@
                     <div class="col-md-9">
                         <div class="fileinput fileinput-new" data-provides="fileinput">
                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" /> </div>
+                                <img src="{{ '/files/' . $content->icon }}" alt="" /> </div>
                             <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 400px; max-height: 500px;"> </div>
                             <div>
                                                                 <span class="btn default btn-file">
@@ -66,7 +74,7 @@
                     <div class="col-md-9">
                         <div class="fileinput fileinput-new" data-provides="fileinput">
                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" /> </div>
+                                <img src="{{ '/files/' . $content->main }}" alt="" /> </div>
                             <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 400px; max-height: 500px;"> </div>
                             <div>
                                                                 <span class="btn default btn-file">

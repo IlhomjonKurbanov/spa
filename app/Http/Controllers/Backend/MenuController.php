@@ -66,6 +66,15 @@ class MenuController extends AdminController
         return view('admin.sub_menu.detail', compact('menu'));
     }
 
+    public function getContentDetail($id)
+    {
+        $content = Content::find($id);
+
+        return view('admin.content.detail', compact('content'));
+    }
+
+
+
     public function createMenuView()
     {
         return view('admin.menu.create');
@@ -394,8 +403,8 @@ class MenuController extends AdminController
         if($request->file('main') && $request->file('main')->isValid()) {
             $data['main'] =  $this->saveImage($request->file('main'));
         };
-        if($request->file('thumb') && $request->file('thumb')->isValid()) {
-            $data['thumb'] =  $this->saveImage($request->file('thumb'));
+        if($request->file('thumbnail') && $request->file('thumbnail')->isValid()) {
+            $data['thumbnail'] =  $this->saveImage($request->file('thumbnail'));
         };
 
 
@@ -423,35 +432,60 @@ class MenuController extends AdminController
 
             ];
 
+            $menuContent = [
+                'type' => 'menu',
+                'name' => '',
+                'childNumber' => Menu::all()->count(),
+                'childNames' => Menu::all()->pluck('name', 'order')->toArray()
+            ];
+
             $updatedMenu = Menu::find($id);
+
+            $newOrder = $updatedMenu->order;
 
             $icon_sidebar = $updatedMenu->icon_sidebar;
             $icon_sidebar_hover = $updatedMenu->icon_sidebar_hover;
             $main = $updatedMenu->main;
             $thumb = $updatedMenu->thumbnail;
 
-            File::put(public_path('Menu/'.$order.'/Description.txt'), json_encode($content), true);
+            File::put(public_path('Menu/Description.txt'), json_encode($menuContent), true);
 
+            File::put(public_path('Menu/'.$newOrder.'/Description.txt'), json_encode($content), true);
 
-            File::copy(public_path('files/'.$icon_sidebar), public_path('Menu/'.$order.'/icon_sidebar.png'));
-            File::copy(public_path('files/'.$icon_sidebar_hover), public_path('Menu/'.$order.'/icon_sidebar_hover.png'));
-            File::copy(public_path('files/'.$main), public_path('Menu/'.$order.'/main.png'));
-            File::copy(public_path('files/'.$thumb), public_path('Menu/'.$order.'/thumb.png'));
+            if(!empty($icon_sidebar))
+            {
+                File::copy(public_path('files/'.$icon_sidebar), public_path('Menu/'.$newOrder.'/icon-sidebar.png'));
+            }
+
+            if(!empty($icon_sidebar_hover))
+            {
+                File::copy(public_path('files/'.$icon_sidebar_hover), public_path('Menu/'.$newOrder.'/icon-sidebar-hover.png'));
+            }
+
+            if(!empty($main))
+            {
+                File::copy(public_path('files/'.$main), public_path('Menu/'.$newOrder.'/main.png'));
+            }
+
+            if(!empty($thumb))
+            {
+                File::copy(public_path('files/'.$thumb), public_path('Menu/'.$newOrder.'/thumb.png'));
+            }
 
         } catch(\Exception $ex)
         {
-            return redirect()->back()->with('error', 'Cập nhật menu thất bại');
+            return redirect()->back()->with('error', $ex->getMessage().$ex->getLine());
         }
 
         return redirect()->back()->with('success', 'Cập nhật menu thành công');
 
     }
 
-    public function updateSubMenu(Request $request)
+    public function updateSubMenu( Request $request)
     {
         $menu = $request->input('id');
 
-
+        $data = $request->all();
 
         if(empty($menu))
         {
@@ -460,30 +494,27 @@ class MenuController extends AdminController
 
         $name = $request->input('name');
 
-        $icon =  ($request->file('icon') && $request->file('icon')->isValid()) ? $this->saveImage($request->file('icon')) : '';
-        $icon_hover =  ($request->file('icon_hover') && $request->file('icon_hover')->isValid()) ? $this->saveImage($request->file('icon_hover')) : '';
-        $main =  ($request->file('main') && $request->file('main')->isValid()) ? $this->saveImage($request->file('main')) : '';
+        if($request->file('icon') && $request->file('icon')->isValid()) {
+            $data['icon'] =  $this->saveImage($request->file('icon'));
+        };
 
+        if($request->file('icon_hover') && $request->file('icon_hover')->isValid()) {
+            $data['icon_hover'] =  $this->saveImage($request->file('icon_hover'));
+        };
 
-        $maxCurrentOrder = DB::table('sub_menus')->count();
+        if($request->file('main') && $request->file('main')->isValid()) {
+            $data['main'] =  $this->saveImage($request->file('main'));
+        };
 
-        $newOrder = $maxCurrentOrder + 1;
 
         $subMenu = SubMenu::find($menu);
 
-        if (!File::exists('Menu/'.$menu.'/'.$newOrder))
-        {
-            File::makeDirectory('Menu/'.$menu.'/'.$newOrder);
-        }
+        $newOrder = $subMenu->order;
+
+
 
         try {
-            $subMenu->update([
-                'name' => $name,
-                'icon' => $icon,
-                'icon_hover' => $icon_hover,
-                'main' => $main,
-                'order' => $maxCurrentOrder + 1
-            ]);
+            $subMenu->update($data);
 
             $content = [
                 'type' => 'sub-menu',
@@ -493,37 +524,45 @@ class MenuController extends AdminController
 
             ];
 
-            $subMenuNames = SubMenu::where('parent', $menu)->pluck('name')->all();
+
+            $parentMenu = SubMenu::where('id', $menu)->first()->parent;
+
+            $subMenuNames = SubMenu::where('parent', $parentMenu)->pluck('name')->all();
 
             $menuContent = [
                 'type' => 'menu',
-                'name' => Menu::find($menu)->name,
+                'name' => Menu::find($parentMenu)->name,
                 'childNumber' => $newOrder,
                 'childNames' => $subMenuNames
             ];
 
-            File::put(public_path('Menu/'.$menu.'/Description.txt'), json_encode($menuContent), true);
+            if (!File::exists('Menu/'.$parentMenu.'/'.$newOrder))
+            {
+                File::makeDirectory('Menu/'.$parentMenu.'/'.$newOrder);
+            }
 
-            File::put(public_path('Menu/'.$menu.'/'.$newOrder.'/Description.txt'), json_encode($content), true);
+            File::put(public_path('Menu/'.$parentMenu.'/Description.txt'), json_encode($menuContent), true);
+
+            File::put(public_path('Menu/'.$parentMenu.'/'.$newOrder.'/Description.txt'), json_encode($content), true);
 
             if(!empty($icon))
             {
-            File::copy(public_path('files/'.$icon), public_path('Menu/'.$menu.'/'.$newOrder.'/icon.png'));
+            File::copy(public_path('files/'.$icon), public_path('Menu/'.$parentMenu.'/'.$newOrder.'/icon.png'));
             }
 
             if(!empty($icon_hover))
             {
-                File::copy(public_path('files/'.$icon_hover), public_path('Menu/'.$menu.'/'.$newOrder.'/icon-hover.png'));
+                File::copy(public_path('files/'.$icon_hover), public_path('Menu/'.$parentMenu.'/'.$newOrder.'/icon-hover.png'));
             }
 
             if(!empty($main))
             {
-                File::copy(public_path('files/'.$main), public_path('Menu/'.$menu.'/'.$newOrder.'/main.png'));
+                File::copy(public_path('files/'.$main), public_path('Menu/'.$parentMenu.'/'.$newOrder.'/main.png'));
             }
 
         } catch(\Exception $ex)
         {
-            return redirect()->back()->with('error', 'Cập nhật menu thất bại');
+            return redirect()->back()->with('error', $ex->getMessage().$ex->getLine());
         }
 
         return redirect()->back()->with('success', 'Cập nhật menu thành công');
@@ -548,29 +587,145 @@ class MenuController extends AdminController
         }
     }
 
-    public function updateContent($id)
+    public function updateContent(Request $request)
     {
+        $data = $request->all();
 
+        $id = $request->input('id');
+
+
+        if(empty($id))
+        {
+            return redirect()->back()->with('error', 'Thêm nội dung thất bại');
+        }
+
+
+
+        if($request->file('icon') && $request->file('icon')->isValid()) {
+            $data['icon'] =  $this->saveImage($request->file('icon'));
+        };
+
+
+        if($request->file('main') && $request->file('main')->isValid()) {
+            $data['main'] =  $this->saveImage($request->file('main'));
+        };
+
+        $images = $request->file('images');
+
+        $countImages = count($images);
+
+        $imageLink = [];
+
+        $detailType = 0;
+
+        if($countImages == 0)
+        {
+            $detailType = 1;
+
+
+        } else if($countImages == 1)
+        {
+            $detailType = 2;
+
+            foreach ($images as $image)
+            {
+                $imageLink[] = $this->saveImage($image);
+            }
+
+            $data['images'] = json_encode($imageLink);
+
+
+        } else if($countImages > 1)
+        {
+            $detailType = 3;
+
+            foreach ($images as $image)
+            {
+                $imageLink[] = $this->saveImage($image);
+            }
+            $data['images'] = json_encode($imageLink);
+        }
+
+        $content = Content::find($id);
+
+        try {
+            $content->update($data);
+
+//            $content = [
+//                'layoutType' => $detailType,
+//                'name' => $data['name'],
+//                'image' =>json_encode($imageLink),
+//                'main' => $data['main'],
+//                'content' => $content,
+//                'icon' => $data['icon'],
+//                'type' => 'detail'
+//            ];
+
+//            $description = ['title'=>$data['title'], 'content'=>$data['content']];
+//
+//            $subMenuCount = DB::table('sub_menus')->where('parent', $menu)->where('parent_type', $menuType)->count();
+//
+//            $contentCount = DB::table('contents')->where('menu', $menu)->where('menu_type', $menuType)->count();
+//
+//            $order = $subMenuCount + $contentCount + 1;
+//
+//
+//            if($menuType == 1) {
+//                File::put(public_path('Menu/' . $menu . '/'.$order.'/Description.txt'), json_encode($description), true);
+//                File::put(public_path('Menu/' . $menu . '/'.$order.'/Content.txt'), json_encode($content), true);
+//            } else if ($menuType == 2)
+//            {
+//                File::put(public_path('Menu/' . $this->getMenuRecursive($menu) . '/Description.txt'), json_encode($content), true);
+//            }
+//            //  File::put(public_path('Menu/'.$menu.'/'.$newOrder.'/Description.txt'), json_encode($content), true);
+
+
+        } catch(\Exception $ex)
+        {
+            return redirect()->back()->with('error', $ex->getMessage().$ex->getLine());
+        }
+
+
+
+        return redirect()->back()->with('success', 'Cập nhật nội dung thành công');
     }
 
     public function deleteMenu($id)
     {
+        $menu = Menu::find($id);
 
+        $menu->delete();
+
+        SubMenu::where('parent', $id)->where('parent_type', 1)->delete();
+
+        Content::where('menu', $id)->where('menu_type', 1)->delete();
+
+
+        return redirect()->back()->with('success', 'Xóa menu thành công');
     }
 
     public function deleteSubMenu($id)
     {
 
+        $menu = SubMenu::find($id);
+
+        $menu->delete();
+
+        Content::where('menu', $id)->where('menu_type', 2)->delete();
+
+
+        return redirect()->back()->with('success', 'Xóa menu thành công');
     }
 
     public function deleteContent($id)
     {
 
+        $content = Content::find($id);
+
+        $content->delete();
+
+        return redirect()->back()->with('success', 'Xóa nội dung thành công');
     }
 
-    public function createVideo()
-    {
-
-    }
 
 }

@@ -11,22 +11,23 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-settings font-green"></i>
-                <span class="caption-subject font-green sbold uppercase">Thêm video</span>
+                <span class="caption-subject font-green sbold uppercase">Sửa video</span>
             </div>
         </div>
-        <form action="{{url('create_video_form')}}" class="form-horizontal form-bordered" method="POST" enctype="multipart/form-data">
+        <form action="{{url('update_video_form')}}" class="form-horizontal form-bordered" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-body">
+                <input type="hidden" name="id" value="{{ $video->id }}">
                 <div class="form-group">
                     <label class="col-md-3 control-label">Tên</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="name" placeholder="Điền tên video">
+                        <input type="text" class="form-control" name="name" placeholder="Điền tên video" value="{{$video->name}}">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-md-3 control-label">Link</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="link" placeholder="Điền link video">
+                        <input type="text" class="form-control" name="link" placeholder="Điền link video" value="{{$video->link}}">
                     </div>
                 </div>
 
@@ -36,7 +37,7 @@
                     <div class="col-md-9">
                         <div class="fileinput fileinput-new" data-provides="fileinput">
                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" /> </div>
+                                <img src="{{ '/files/'.$video->image }}" alt="" /> </div>
                             <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 400px; max-height: 500px;"> </div>
                             <div>
                                                                 <span class="btn default btn-file">

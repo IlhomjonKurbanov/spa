@@ -32,8 +32,10 @@ class VideoController extends AdminController
 
         foreach($videos as $video)
         {
-            File::copy(public_path('files/'.$video->image), public_path('Video/'.$i.'.png'));
-            $i++;
+            if(!empty($video->image)) {
+                File::copy(public_path('files/' . $video->image), public_path('Video/' . $i . '.png'));
+                $i++;
+            }
         }
         try {
 
@@ -58,5 +60,36 @@ class VideoController extends AdminController
         $videos  = Video::all();
 
         return view('admin.video.index', compact('videos'));
+    }
+
+    public function getVideoDetail($id)
+    {
+        $video = Video::find($id);
+
+        return view('admin.video.detail', compact('video'));
+    }
+
+    public function updateVideo(Request $request)
+    {
+        $id = $request->input('id');
+
+        $data = $request->all();
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $data['image'] = $this->saveImage($request->file('image'));
+        };
+
+        $video = Video::find($id);
+
+        $video->update($data);
+
+        return redirect()->back()->with('success', 'Cập nhật video thành công');
+    }
+
+    public function deleteVideo($id)
+    {
+        Video::find($id)->delete();
+
+        return redirect()->back()->with('success', 'Xóa video thành công');
     }
 }

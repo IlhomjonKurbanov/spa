@@ -1,6 +1,12 @@
 @extends('admin')
 
 @section('content')
+    @if (session()->has('error'))
+        <div class="alert alert-error">{{ session()->get('error') }}</div>
+    @endif
+    @if (session()->has('success'))
+        <div class="alert alert-success">{{ session()->get('success') }}</div>
+    @endif
 
     @if(count($contents) > 0)
     <table class="table table-striped table-bordered table-hover">
@@ -49,11 +55,11 @@
 
                         <div class="col-md-12">
                             <div class="btn-group">
-                                <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Sửa
-                                </button>
+                                <a class="btn btn-xs green dropdown-toggle" href="{{url('view-content', ['id' => $content->id])}}"> Sửa
+                                </a>
                             </div>
                             <div class="btn-group">
-                                <button class="btn btn-xs red dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Xóa
+                                <button class="btn btn-xs red dropdown-toggle" onclick="deleteContent({{$content->id}})"> Xóa
                                 </button>
 
                             </div>
@@ -67,5 +73,21 @@
     @else
     <h3>Không có nội dung nào</h3>
     @endif
+
+    @push('scripts')
+        <script>
+
+            var baseUrl = '{{url('/')}}';
+
+            function deleteContent(id)
+            {
+                if (confirm("Bạn có chắc chắn muốn xóa nội dung ?")) {
+                    window.location.href = baseUrl+'/delete-content/'+id;
+                }
+                return false;
+
+            }
+        </script>
+    @endpush
 
 @endsection

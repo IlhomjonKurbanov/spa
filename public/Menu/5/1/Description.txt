@@ -1,1 +1,1 @@
-{"type":"menu","name":"Test 1","childNumber":5,"childNames":{"TEst 222":2,"tt":3,"TTT":4,"Tt":5}}
+{"layoutType":1,"name":null,"image":"[]","main":"","content":"","icon":"21009c9be6ba48fedf5bf9d48efe506eicon-hoverpng.png","type":"detail"}
