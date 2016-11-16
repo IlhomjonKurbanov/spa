@@ -34,6 +34,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Chọn loại nội dung</label>
+                    <div class="col-md-4">
+                        <select class="form-control" value="detail_type">
+                            <option value="1">Chỉ có nội dung</option>
+                            <option value="2">Có 1 ảnh</option>
+                            <option value="3">Có nhiều ảnh</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     @php $images = $content->image @endphp
                     <div class="row">
                         <div class="col-md-3 col-md-offset-3">

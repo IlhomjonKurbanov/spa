@@ -34,6 +34,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Chọn loại nội dung</label>
+                    <div class="col-md-4>
+                        <select class="form-control" value="detail_type">
+                            <option value="1">Chỉ có nội dung</option>
+                            <option value="2">Có 1 ảnh</option>
+                            <option value="3">Có nhiều ảnh</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="col-md-3 control-label">Ảnh (có thể upload nhiều ảnh)</label>
                     <div class="col-md-4">
                         <input type="file" class="form-control" name="images[]" multiple>

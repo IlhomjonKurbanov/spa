@@ -14,6 +14,18 @@ class CreateIntroTable extends Migration
     public function up()
     {
         //
+        Schema::create('intros', function (Blueprint $table) {
+            $table->increments('id');
+            $table->text('title')->nullable();
+            $table->text('content')->nullable();
+            $table->string('icon')->nullable();
+            $table->string('image')->nullable();
+            $table->string('name')->nullable();
+            $table->string('main')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('status')->unsigned()->default(1);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -24,5 +36,6 @@ class CreateIntroTable extends Migration
     public function down()
     {
         //
+        Schema::drop('intros');
     }
 }
