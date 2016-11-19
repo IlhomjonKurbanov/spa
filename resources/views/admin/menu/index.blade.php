@@ -54,10 +54,10 @@
 
                     <div class="row" style="margin-top: 20px">
                         <div class="col-md-12">
-                    {{--<div class="btn-group">--}}
-                        {{--<button class="btn btn-xs gray dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"> Tạo nội dung--}}
-                        {{--</button>--}}
-                    {{--</div>--}}
+                    <div class="btn-group">
+                        <a class="btn btn-xs gray dropdown-toggle" href="{{url('create-content', ['menu'=>$menu->id, 'menuType'=>1])}}"> Tạo nội dung
+                        </a>
+                    </div>
                             <div class="btn-group">
                                 <a class="btn btn-xs gray dropdown-toggle" href="{{url('list-content', ['menu'=>$menu->id, 'menuType'=>1])}}"> Xem nội dung
                                 </a>

@@ -123,7 +123,7 @@ class MenuController extends AdminController
             ]);
 
             $content = [
-                'type' => 'menu',
+                'type' => 'Menu',
                 'name' => $name,
                 'childNumber' => 0,
                 'childNames' => ''
@@ -131,8 +131,8 @@ class MenuController extends AdminController
             ];
 
             $menuContent = [
-                'type' => 'menu',
-                'name' => '',
+                'type' => 'Menu',
+                'name' => 'Menu',
                 'childNumber' => Menu::all()->count(),
                 'childNames' => Menu::all()->pluck('name', 'order')->toArray()
             ];
@@ -239,12 +239,12 @@ class MenuController extends AdminController
             $content = [
                 'type' => 'sub-menu',
                 'name' => $name,
-                'childNumber' => $subMenuCount + $contentCount,
+                'childNumber' => 0,
                 'childNames' => ''
 
             ];
 
-            $subMenuNames = SubMenu::where('parent', $menu)->where('parent_type', $menuType)->pluck('order', 'name')->all();
+            $subMenuNames = SubMenu::where('parent', $menu)->where('parent_type', $menuType)->pluck('name', 'order')->toArray();
 
             if($menuType == 1) {
             $menuContent = [
@@ -260,8 +260,6 @@ class MenuController extends AdminController
                     'childNames' => $subMenuNames
                 ];
             }
-
-
 
             if($menuType == 1) {
 
@@ -869,6 +867,33 @@ class MenuController extends AdminController
         $content = Content::find($id);
 
         $path = $content->path;
+
+        $menu = $content->menu;
+
+        $rank = $content->rank;
+
+        $menusBiggers = SubMenu::where('parent', $menu)->where('order', '>', $menu->order)->where('rank', $rank)->get();
+
+        foreach ($menusBiggers as $menusBigger)
+        {
+            $orderBigger = $menusBigger->order;
+
+            File::copyDirectory('Menu/'.$menusBigger->path, 'Menu/'.$path);
+
+            File::deleteDirectory('Menu/' . $menusBigger->path);
+
+            $currentPath = explode('/', $menusBigger->path);
+
+            $currentPath[$menusBigger->rank - 1] = $orderBigger - 1;
+
+            $newPath = implode('/', $currentPath);
+
+            $menusBigger->update(['path' => $newPath, 'order' => $orderBigger - 1]);
+
+
+            $this->updateByRank($menusBigger->id, $orderBigger - 1, $menusBigger->rank);
+
+        }
 
         $content->delete();
 

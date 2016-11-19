@@ -1,1 +1,1 @@
-{"type":"menu","name":"S\u1eb9o l\u1ed7 ch\u00e2n l\u00f4ng","childNumber":2,"childNames":{"\u0110\u1ecbnh ngh\u0129a":1,"Nguy\u00ean nh\u00e2n":2}}
+{"type":"menu","name":"S\u1eb9o l\u1ed7 ch\u00e2n l\u00f4ng","childNumber":3,"childNames":{"1":"M\u1ee5n \u0111\u1ea7u \u0111en, \u0111\u1ea7u tr\u1eafng","2":"M\u1ee5n s\u01b0ng vi\u00eam","3":"M\u1ee5n nang"}}

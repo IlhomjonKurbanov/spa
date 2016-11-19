@@ -17,36 +17,50 @@ class VideoController extends AdminController
 
         Video::create($data);
 
-        if (!File::exists('Video'))
+        if (!File::exists('Videos'))
         {
-            File::makeDirectory('Video');
+            File::makeDirectory('Videos');
         }
 
         $videos = Video::all();
-        $videoNumber = Video::all()->count();
+        $videoNumber = $videos->count();
 
         $videosUrls = $videos->pluck('link')->toArray();
         $videosImages = $videos->pluck('image')->toArray();
 
-        $i = 1;
+        $i = $videoNumber;
 
-        foreach($videos as $video)
-        {
-            if(!empty($video->image)) {
-                File::copy(public_path('files/' . $video->image), public_path('Video/' . $i . '.png'));
-                $i++;
-            }
-        }
+
         try {
 
-            $content = [
-                'type' => 'videosPage',
-                'videoNumber' => $videoNumber,
-                "videoUrls" => $videosUrls,
-                "videoImages" => $videosImages,
-            ];
+            $content = [];
 
-            File::put(public_path('Video/description.json'), json_encode($content), true);
+            foreach($videos as $video)
+            {
+                $item = [];
+                $item['videoId'] = $video->link;
+
+                $item['title'] = $video->name;
+
+
+
+                if(!empty($video->image)) {
+                    File::copy(public_path('files/' . $video->image), public_path('Videos/' . $i . '.png'));
+
+                    $item['videoImage'] = $i . '.png';
+
+                    $i++;
+                }
+
+                $content[] = $item;
+            }
+
+
+
+
+            $description = ['video' => $content];
+
+            File::put(public_path('Videos/Description.txt'), json_encode($description), true);
         } catch (\Exception $ex)
         {
             return redirect()->back()->with('error', 'Thêm video thất bại');
@@ -82,6 +96,22 @@ class VideoController extends AdminController
         $video = Video::find($id);
 
         $video->update($data);
+
+        $videos = Video::all();
+
+        foreach ($videos as $video)
+        {
+            $item = [];
+            $item['videoId'] = $video->link;
+            $item['videoImage'] = $video->image;
+            $item['title'] = $video->name;
+
+            $content[] = $item;
+        }
+
+        $description = ['video' => $content];
+
+        File::put(public_path('Videos/Description.txt'), json_encode($description), true);
 
         return redirect()->back()->with('success', 'Cập nhật video thành công');
     }

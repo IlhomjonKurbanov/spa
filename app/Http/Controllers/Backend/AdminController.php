@@ -56,9 +56,34 @@ class AdminController extends Controller
             cache()->forever('app-version', $oldVersion + 1);
         }
 
-        $files = glob(public_path('Menu/*'));
+
+
+        if(File::exists(public_path('Content.zip')))
+        {
+            File::delete(public_path('Content.zip'));
+        }
+
+
+        if(File::exists(public_path('Content')))
+        {
+            File::deleteDirectory(public_path('Content'));
+        }
+
+
+        File::makeDirectory(public_path('Content'));
+
+        File::copyDirectory(public_path('Menu'), public_path('Content/Menu'));
+
+        File::copyDirectory(public_path('Intro'), public_path('Content/Intro'));
+
+        File::copyDirectory(public_path('Videos'), public_path('Content/Videos'));
+
+        $files = public_path('Content/');
+
+
         $zipper = new Zipper();
-        $zipper->make(public_path('Menu.zip'))->add($files);
+
+        $zipper->make(public_path('Content.zip'))->add($files);
 
         return response([
             'status' => 1,

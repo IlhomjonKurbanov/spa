@@ -27,6 +27,10 @@
     $(document).ready(function() {
         $('#update-zip').click(function() {
             $.ajax({
+                 beforeSend: function()
+                 {
+                     $('#result').html('Đang nén file, vui lòng chờ trong giây lát');
+                 },
                  url: '/make-zip',
                  type: 'get',
                  dataType: 'json',

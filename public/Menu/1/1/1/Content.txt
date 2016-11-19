@@ -1,1 +1,0 @@
-{"layoutType":3,"name":null,"image":"[\"e55c4dcd6aca4f61a6e531da9f9510deiconpng.png\",\"e55c4dcd6aca4f61a6e531da9f9510deicon-hoverpng.png\",\"e55c4dcd6aca4f61a6e531da9f9510demainpng.png\"]","main":"18b14046a3bf725c3575f271ca04cb9dmainpng.png","content":"ABC","icon":"18b14046a3bf725c3575f271ca04cb9diconpng.png","type":"detail"}

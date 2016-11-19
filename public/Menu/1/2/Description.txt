@@ -1,1 +1,1 @@
-{"type":"sub-menu","name":"Nguy\u00ean nh\u00e2n","childNumber":1,"childNames":""}
+{"type":"sub-menu","name":"M\u1ee5n s\u01b0ng vi\u00eam","childNumber":1,"childNames":""}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Intro;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use File;
 
 class IntroController extends AdminController
 {
@@ -83,22 +84,28 @@ class IntroController extends AdminController
 
         \DB::beginTransaction();
         try {
-            Intro::create([
-                'icon' => $icon,
-                'image' => json_encode($imageLink),
-                'main' => $main,
-                'content' => $content
-            ]);
-
 
 
             $order = Intro::all()->count();
 
+            $newOrder = $order + 1;
 
+            Intro::create([
+                'icon' => $icon,
+                'image' => json_encode($imageLink),
+                'main' => $main,
+                'content' => $content,
+                'order' => $order +1
+            ]);
 
             if(!\File::exists(public_path('Intro/')))
             {
                 \File::makeDirectory(public_path('Intro/'), 0777);
+            }
+
+            if(!\File::exists(public_path('Intro/'.$newOrder)))
+            {
+                \File::makeDirectory(public_path('Intro/'.$newOrder), 0777);
             }
 
             $localImageLink = [];
@@ -107,7 +114,7 @@ class IntroController extends AdminController
                 $i = 0;
                 foreach($imageLink as $itemImage) {
                     $i++;
-                    \File::copy(public_path('files/' . $itemImage), public_path('Intro/' . $order . '/'.$i.'.png'));
+                    \File::copy(public_path('files/' . $itemImage), public_path('Intro/' . $newOrder . '/'.$i.'.png'));
 
                     $localImageLink[] = $i.'.png';
                 }
@@ -121,16 +128,16 @@ class IntroController extends AdminController
                 'content' => $content,
             ];
 
-            \File::put(public_path('Intro/'.$order.'/Description.txt'), json_encode($description), true);
+            \File::put(public_path('Intro/'.$newOrder.'/Description.txt'), json_encode($description), true);
 
-            \File::put(public_path('Intro/'.$order.'/Content.txt'), json_encode($content), true);
+            \File::put(public_path('Intro/'.$newOrder.'/Content.txt'), json_encode($content), true);
 
             if (!empty($icon)) {
-                File::copy(public_path('files/' . $icon), public_path('Intro/' . $order . '/icon.png'));
+                File::copy(public_path('files/' . $icon), public_path('Intro/' . $newOrder . '/icon.png'));
             }
 
             if (!empty($main)) {
-                File::copy(public_path('files/' . $main), public_path('Intro/' . $order . '/main.png'));
+                File::copy(public_path('files/' . $main), public_path('Intro/' . $newOrder . '/main.png'));
             }
 
 
@@ -159,7 +166,6 @@ class IntroController extends AdminController
         {
             return redirect()->back()->with('error', 'Thêm nội dung thất bại');
         }
-
 
 
         if($request->file('icon') && $request->file('icon')->isValid()) {
@@ -270,6 +276,15 @@ class IntroController extends AdminController
     {
 
         $intro = Intro::find($id);
+
+        $order = $intro->order;
+
+        $biggerIntros = Intro::where('order', '>', $order)->get();
+
+        foreach($biggerIntros as $biggerIntro)
+        {
+            $biggerIntro->update(['order' => $biggerIntro->order - 1]);
+        }
 
         $intro->delete();
 
