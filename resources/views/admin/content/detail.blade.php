@@ -40,6 +40,7 @@
                             <option value="1">Chỉ có nội dung</option>
                             <option value="2">Có 1 ảnh</option>
                             <option value="3">Có nhiều ảnh</option>
+                            <option value="4">Có nhiều ảnh và content</option>
                         </select>
                     </div>
                 </div>

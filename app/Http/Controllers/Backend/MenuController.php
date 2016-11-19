@@ -158,7 +158,7 @@ class MenuController extends AdminController
 
             if(!empty($thumb))
             {
-                File::copy(public_path('files/'.$thumb), public_path('Menu/'.$newOrder.'/thumb.png'));
+                File::copy(public_path('files/'.$thumb), public_path('Menu/'.$newOrder.'/thumbnail.png'));
             }
 
         } catch(\Exception $ex)
@@ -357,7 +357,12 @@ class MenuController extends AdminController
 
         } else if($countImages > 1)
         {
-            $detailType = 3;
+            if(empty($content))
+            {
+                $detailType = 3;
+            } else {
+                $detailType = 4;
+            }
 
             foreach ($images as $image)
             {
@@ -388,6 +393,25 @@ class MenuController extends AdminController
 
             DB::beginTransaction();
 
+
+            if (!File::exists('Menu/' . $path . '/' . $order)) {
+                File::makeDirectory('Menu/' . $path . '/' . $order);
+            }
+
+
+            $localImageLink = [];
+
+            if(!empty($imageLink)) {
+                $i = 0;
+                foreach($imageLink as $itemImage) {
+                    $i++;
+                    File::copy(public_path('files/' . $itemImage), public_path('Menu/' . $path  . '/'.$i.'.png'));
+
+                    $localImageLink[] = $i.'.png';
+                }
+            }
+
+
             Content::create([
                 'menu' => $menu,
                 'menu_type' => $menuType,
@@ -400,20 +424,12 @@ class MenuController extends AdminController
             ]);
 
             $content = [
-                'layoutType' => $detailType,
-                'name' => $name,
-                'image' =>json_encode($imageLink),
-                'main' => $main,
+                'images' =>json_encode($localImageLink),
+                'title' => $title,
                 'content' => $content,
-                'icon' => $icon,
-                'type' => 'detail'
             ];
 
-            $description = ['title'=>$title, 'content'=>$content];
-
-            if (!File::exists('Menu/' . $path . '/' . $order)) {
-                File::makeDirectory('Menu/' . $path . '/' . $order);
-            }
+            $description = ['type'=>'detail', 'layoutType'=>$detailType];
 
             File::put(public_path('Menu/' . $path . '/'.$order.'/Description.txt'), json_encode($description), true);
 
@@ -425,14 +441,6 @@ class MenuController extends AdminController
 
             if (!empty($main)) {
                 File::copy(public_path('files/' . $main), public_path('Menu/' . $path . '/' . $order . '/main.png'));
-            }
-
-            if(!empty($imageLink)) {
-                $i = 0;
-                foreach($imageLink as $itemImage) {
-                    $i++;
-                    File::copy(public_path('files/' . $itemImage), public_path('Menu/' . $path . '/' . $order . '/'.$i.'.png'));
-                }
             }
 
 
@@ -532,7 +540,7 @@ class MenuController extends AdminController
 
             if(!empty($thumb))
             {
-                File::copy(public_path('files/'.$thumb), public_path('Menu/'.$newOrder.'/thumb.png'));
+                File::copy(public_path('files/'.$thumb), public_path('Menu/'.$newOrder.'/thumbnail.png'));
             }
 
         } catch(\Exception $ex)
@@ -669,7 +677,7 @@ class MenuController extends AdminController
 
         if(empty($id))
         {
-            return redirect()->back()->with('error', 'Thêm nội dung thất bại');
+            return redirect()->back()->with('error', 'Cập nhật nội dung thất bại');
         }
 
         if($request->file('icon') && $request->file('icon')->isValid()) {
@@ -688,6 +696,7 @@ class MenuController extends AdminController
         $imageLink = [];
 
         $detailType = 0;
+
 
         if($countImages == 0)
         {
@@ -708,39 +717,58 @@ class MenuController extends AdminController
 
         } else if($countImages > 1)
         {
-            $detailType = 3;
+            $dataContent = $data['content'];
 
-            foreach ($images as $image)
-            {
+            if(empty($dataContent)) {
+
+                $detailType = 3;
+
+            } else {
+
+                $detailType = 4;
+            }
+
+            foreach ($images as $image) {
+
                 $imageLink[] = $this->saveImage($image);
             }
+
             $data['images'] = json_encode($imageLink);
+
         }
 
         $content = Content::find($id);
 
+        $path = $content->path;
+
         DB::beginTransaction();
 
         try {
+
+
+
             $content->update($data);
 
             $content = [
-                'layoutType' => $detailType,
-                'name' => $data['name'],
-                'image' =>json_encode($imageLink),
-                'main' => $data['main'],
-                'content' => $content,
-                'icon' => $data['icon'],
-                'type' => 'detail'
+                'images' =>json_encode($localImageLink),
+                'title' => $data['title'],
+                'content' => $data['content'],
             ];
 
-            $description = ['title'=>$data['title'], 'content'=>$data['content']];
+            $description = ['type'=>'detail', 'layoutType'=>$detailType];
 
-            $path = $content->path;
-
-            File::put(public_path('Menu/' . $path . '/Description.txt'), json_encode($description), true);
+            File::put(public_path('Menu/' . $path .'/Description.txt'), json_encode($description), true);
 
             File::put(public_path('Menu/' . $path . '/Content.txt'), json_encode($content), true);
+
+            if (!empty($icon)) {
+                File::copy(public_path('files/' . $icon), public_path('Menu/' . $path . '/icon.png'));
+            }
+
+            if (!empty($main)) {
+                File::copy(public_path('files/' . $main), public_path('Menu/' . $path . '/main.png'));
+            }
+
 
         } catch(\Exception $ex)
         {
@@ -764,11 +792,7 @@ class MenuController extends AdminController
             File::deleteDirectory('Menu/' . $path);
         }
 
-
-
         $menusBiggers = Menu::where('order' , '>', $path)->where('rank', $menu->rank)->get();
-
-
 
         foreach ($menusBiggers as $menusBigger)
         {
@@ -790,9 +814,7 @@ class MenuController extends AdminController
 
         Content::where('menu', $id)->where('menu_type', 1)->delete();
 
-
         return redirect()->back()->with('success', 'Xóa menu thành công');
-
 
     }
 

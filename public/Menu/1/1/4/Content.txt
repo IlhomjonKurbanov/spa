@@ -1,0 +1,1 @@
+{"layoutType":3,"name":null,"image":"[\"1.png\",\"2.png\"]","main":"main.png","content":"TTT","icon":"icon.png","type":"detail"}

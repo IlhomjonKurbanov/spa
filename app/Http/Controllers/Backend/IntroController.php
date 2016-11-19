@@ -61,12 +61,24 @@ class IntroController extends AdminController
 
         } else if($countImages > 1)
         {
-            $detailType = 3;
+            $dataContent = $content;
 
-            foreach ($images as $image)
-            {
+            if(empty($dataContent)) {
+
+                $detailType = 3;
+
+            } else {
+
+                $detailType = 4;
+            }
+
+            foreach ($images as $image) {
+
                 $imageLink[] = $this->saveImage($image);
             }
+
+            $data['images'] = json_encode($imageLink);
+
         }
 
         \DB::beginTransaction();
@@ -78,33 +90,48 @@ class IntroController extends AdminController
                 'content' => $content
             ]);
 
-            $content = [
-                'layoutType' => $detailType,
-                'name' => $name,
-                'image' =>json_encode($imageLink),
-                'main' => $main,
-                'content' => $content,
-                'icon' => $icon,
-                'type' => 'detail'
-            ];
+
 
             $order = Intro::all()->count();
 
-            $description = ['title'=>$title, 'content'=>$content];
 
-            if(!\File::exists(public_path('Menu/0/')))
+
+            if(!\File::exists(public_path('Intro/')))
             {
-                \File::makeDirectory(public_path('Menu/0/'), 0777);
+                \File::makeDirectory(public_path('Intro/'), 0777);
             }
 
-            if(!\File::exists(public_path('Menu/0/'.$order)))
-            {
-                \File::makeDirectory(public_path('Menu/0/'.$order), 0777);
+            $localImageLink = [];
+
+            if(!empty($imageLink)) {
+                $i = 0;
+                foreach($imageLink as $itemImage) {
+                    $i++;
+                    \File::copy(public_path('files/' . $itemImage), public_path('Intro/' . $order . '/'.$i.'.png'));
+
+                    $localImageLink[] = $i.'.png';
+                }
             }
 
-            \File::put(public_path('Menu/0/'.$order.'/Description.txt'), json_encode($description), true);
-            \File::put(public_path('Menu/0/'.$order.'/Content.txt'), json_encode($content), true);
+            $description = ['type'=>'detail', 'layoutType'=>$detailType];
 
+            $content = [
+                'images' =>json_encode($localImageLink),
+                'title' => $title,
+                'content' => $content,
+            ];
+
+            \File::put(public_path('Intro/'.$order.'/Description.txt'), json_encode($description), true);
+
+            \File::put(public_path('Intro/'.$order.'/Content.txt'), json_encode($content), true);
+
+            if (!empty($icon)) {
+                File::copy(public_path('files/' . $icon), public_path('Intro/' . $order . '/icon.png'));
+            }
+
+            if (!empty($main)) {
+                File::copy(public_path('files/' . $main), public_path('Intro/' . $order . '/main.png'));
+            }
 
 
         } catch(\Exception $ex)
@@ -171,55 +198,70 @@ class IntroController extends AdminController
 
         } else if($countImages > 1)
         {
-            $detailType = 3;
+            $dataContent = $data['content'];
 
-            foreach ($images as $image)
-            {
+            if(empty($dataContent)) {
+
+                $detailType = 3;
+
+            } else {
+
+                $detailType = 4;
+            }
+
+            foreach ($images as $image) {
+
                 $imageLink[] = $this->saveImage($image);
             }
+
             $data['images'] = json_encode($imageLink);
+
         }
 
         $content = Intro::find($id);
 
+        $order = $content->order;
+
         try {
             $content->update($data);
 
-//            $content = [
-//                'layoutType' => $detailType,
-//                'name' => $data['name'],
-//                'image' =>json_encode($imageLink),
-//                'main' => $data['main'],
-//                'content' => $content,
-//                'icon' => $data['icon'],
-//                'type' => 'detail'
-//            ];
+            $localImageLink = [];
 
-//            $description = ['title'=>$data['title'], 'content'=>$data['content']];
-//
-//            $subMenuCount = DB::table('sub_menus')->where('parent', $menu)->where('parent_type', $menuType)->count();
-//
-//            $contentCount = DB::table('contents')->where('menu', $menu)->where('menu_type', $menuType)->count();
-//
-//            $order = $subMenuCount + $contentCount + 1;
-//
-//
-//            if($menuType == 1) {
-//                File::put(public_path('Menu/' . $menu . '/'.$order.'/Description.txt'), json_encode($description), true);
-//                File::put(public_path('Menu/' . $menu . '/'.$order.'/Content.txt'), json_encode($content), true);
-//            } else if ($menuType == 2)
-//            {
-//                File::put(public_path('Menu/' . $this->getMenuRecursive($menu) . '/Description.txt'), json_encode($content), true);
-//            }
-//            //  File::put(public_path('Menu/'.$menu.'/'.$newOrder.'/Description.txt'), json_encode($content), true);
+            if(!empty($imageLink)) {
+                $i = 0;
+                foreach($imageLink as $itemImage) {
+                    $i++;
+                    \File::copy(public_path('files/' . $itemImage), public_path('Intro/' . $order . '/'.$i.'.png'));
+
+                    $localImageLink[] = $i.'.png';
+                }
+            }
+
+            $description = ['type'=>'detail', 'layoutType'=>$detailType];
+
+            $content = [
+                'images' =>json_encode($localImageLink),
+                'title' => $data['title'],
+                'content' => $data['content'],
+            ];
+
+            \File::put(public_path('Intro/' . $order .'/Description.txt'), json_encode($description), true);
+
+            \File::put(public_path('Intro/' . $order . '/Content.txt'), json_encode($content), true);
+
+            if (!empty($icon)) {
+                \File::copy(public_path('files/' . $icon), public_path('Intro/' . $order . '/icon.png'));
+            }
+
+            if (!empty($main)) {
+                \File::copy(public_path('files/' . $main), public_path('Intro/' . $order . '/main.png'));
+            }
 
 
         } catch(\Exception $ex)
         {
             return redirect()->back()->with('error', $ex->getMessage().$ex->getLine());
         }
-
-
 
         return redirect()->back()->with('success', 'Cập nhật nội dung thành công');
     }
