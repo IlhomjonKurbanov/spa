@@ -15,7 +15,9 @@ class Menu extends Model
         'thumbnail',
         'description',
         'order',
-        'status'
+        'status',
+        'path',
+        'rank'
     ];
 
     protected $dates = ['created_at', 'updated_at'];

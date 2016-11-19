@@ -69,6 +69,7 @@ class IntroController extends AdminController
             }
         }
 
+        \DB::beginTransaction();
         try {
             Intro::create([
                 'icon' => $icon,
@@ -87,30 +88,33 @@ class IntroController extends AdminController
                 'type' => 'detail'
             ];
 
-//            $description = ['title'=>$title, 'content'=>$content];
-//
-//            $subMenuCount = DB::table('sub_menus')->where('parent', $menu)->where('parent_type', $menuType)->count();
-//
-//            $contentCount = DB::table('contents')->where('menu', $menu)->where('menu_type', $menuType)->count();
-//
-//            $order = $subMenuCount + $contentCount + 1;
-//
-//
-//            if($menuType == 1) {
-//                File::put(public_path('Menu/' . $menu . '/'.$order.'/Description.txt'), json_encode($description), true);
-//                File::put(public_path('Menu/' . $menu . '/'.$order.'/Content.txt'), json_encode($content), true);
-//            } else if ($menuType == 2)
-//            {
-//                File::put(public_path('Menu/' . $this->getMenuRecursive($menu) . '/Description.txt'), json_encode($content), true);
-//            }
-//            //  File::put(public_path('Menu/'.$menu.'/'.$newOrder.'/Description.txt'), json_encode($content), true);
+            $order = Intro::all()->count();
+
+            $description = ['title'=>$title, 'content'=>$content];
+
+            if(!\File::exists(public_path('Menu/0/')))
+            {
+                \File::makeDirectory(public_path('Menu/0/'), 0777);
+            }
+
+            if(!\File::exists(public_path('Menu/0/'.$order)))
+            {
+                \File::makeDirectory(public_path('Menu/0/'.$order), 0777);
+            }
+
+            \File::put(public_path('Menu/0/'.$order.'/Description.txt'), json_encode($description), true);
+            \File::put(public_path('Menu/0/'.$order.'/Content.txt'), json_encode($content), true);
+
 
 
         } catch(\Exception $ex)
         {
+            \DB::rollBack();
+
             return redirect()->back()->with('error', $ex->getMessage().$ex->getLine());
         }
 
+        \DB::commit();
 
 
         return redirect()->back()->with('success', 'Thêm nội dung thành công');

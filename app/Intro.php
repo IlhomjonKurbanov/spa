@@ -8,7 +8,7 @@ class Intro extends Model
 {
     //
 
-    protected $fillable = ['content', 'icon', 'image', 'main', 'description', 'status', 'name'];
+    protected $fillable = ['content', 'icon', 'image', 'main', 'description', 'status', 'name', 'path', 'rank'];
 
     protected $dates = ['created_at', 'updated_at'];
 

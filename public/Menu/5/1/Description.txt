@@ -1,1 +1,0 @@
-{"layoutType":1,"name":null,"image":"[]","main":"","content":"","icon":"21009c9be6ba48fedf5bf9d48efe506eicon-hoverpng.png","type":"detail"}
