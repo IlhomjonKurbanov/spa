@@ -18,6 +18,12 @@
             {{ csrf_field() }}
             <div class="form-body">
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Tên</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="name" placeholder="Điền tên">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-md-3 control-label">Title</label>
                     <div class="col-md-4">
                         <input type="text" class="form-control" name="title" placeholder="Điền title">

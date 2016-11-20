@@ -25,6 +25,31 @@ class IntroController extends AdminController
         return view('admin.intro.list', compact('intros'));
     }
 
+    public function getIntroOutside($id)
+    {
+
+        $intro = Intro::find($id);
+
+        return view('admin.intro.outside_detail', compact('intro'));
+
+    }
+
+    public function createIntroOutside(Request $request)
+    {
+        $name = $request->input('name');
+
+        $icon_sidebar =  ($request->file('icon_sidebar') && $request->file('icon_sidebar')->isValid()) ? $this->saveImage($request->file('icon_sidebar')) : '';
+        $icon_sidebar_hover =  ($request->file('icon_sidebar_hover') && $request->file('icon_sidebar_hover')->isValid()) ? $this->saveImage($request->file('icon_sidebar_hover')) : '';
+        $main =  ($request->file('main') && $request->file('main')->isValid()) ? $this->saveImage($request->file('main')) : '';
+        $thumb =  ($request->file('thumbnail') && $request->file('thumbnail')->isValid()) ? $this->saveImage($request->file('thumbnail')) : '';
+
+    }
+
+    public function updateIntroOutside(Request $request)
+    {
+
+    }
+
 
     public function createIntro(Request $request)
     {
@@ -95,7 +120,9 @@ class IntroController extends AdminController
                 'image' => json_encode($imageLink),
                 'main' => $main,
                 'content' => $content,
-                'order' => $order +1
+                'order' => $order +1,
+                'name' => $name,
+                'title' => $title
             ]);
 
             if(!\File::exists(public_path('Intro/')))
@@ -127,6 +154,15 @@ class IntroController extends AdminController
                 'title' => $title,
                 'content' => $content,
             ];
+
+            $menuContent = [
+                'type' => 'Intro',
+                'name' => $name,
+                'childNumber' => Intro::all()->count(),
+                'childNames' => Intro::all()->pluck('name', 'order')->toArray()
+            ];
+
+            \File::put(public_path('Intro/Description.txt'), json_encode($menuContent), true);
 
             \File::put(public_path('Intro/'.$newOrder.'/Description.txt'), json_encode($description), true);
 
@@ -250,6 +286,15 @@ class IntroController extends AdminController
                 'title' => $data['title'],
                 'content' => $data['content'],
             ];
+
+            $menuContent = [
+                'type' => 'Intro',
+                'name' => $data['name'],
+                'childNumber' => Intro::all()->count(),
+                'childNames' => Intro::all()->pluck('name', 'order')->toArray()
+            ];
+
+            \File::put(public_path('Intro/Description.txt'), json_encode($menuContent), true);
 
             \File::put(public_path('Intro/' . $order .'/Description.txt'), json_encode($description), true);
 

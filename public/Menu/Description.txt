@@ -1,1 +1,1 @@
-{"type":"menu","name":"","childNumber":2,"childNames":{"1":"S\u1eb9o l\u1ed7 ch\u00e2n l\u00f4ng","2":"M\u1ee5n"}}
+{"type":"Menu","name":"Menu","childNumber":1,"childNames":{"1":"S\u1eb9o l\u1ed7 ch\u00e2n l\u00f4ng"}}

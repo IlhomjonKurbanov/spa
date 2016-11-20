@@ -58,7 +58,7 @@ class VideoController extends AdminController
 
 
 
-            $description = ['video' => $content];
+            $description = ['videos' => $content];
 
             File::put(public_path('Videos/Description.txt'), json_encode($description), true);
         } catch (\Exception $ex)
@@ -109,7 +109,7 @@ class VideoController extends AdminController
             $content[] = $item;
         }
 
-        $description = ['video' => $content];
+        $description = ['videos' => $content];
 
         File::put(public_path('Videos/Description.txt'), json_encode($description), true);
 

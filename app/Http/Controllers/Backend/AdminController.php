@@ -78,12 +78,12 @@ class AdminController extends Controller
 
         File::copyDirectory(public_path('Videos'), public_path('Content/Videos'));
 
-        $files = public_path('Content/');
+        //$files = glob(public_path('Content/'));
 
 
         $zipper = new Zipper();
 
-        $zipper->make(public_path('Content.zip'))->add($files);
+        $zipper->make(public_path('Content.zip'))->add(public_path('Content'));
 
         return response([
             'status' => 1,
@@ -93,9 +93,9 @@ class AdminController extends Controller
 
     public function zipAndReturnFile()
     {
-        if(File::exists(public_path('Menu.zip')))
+        if(File::exists(public_path('Content.zip')))
         {
-            return response()->download(public_path('Menu.zip'));
+            return response()->download(public_path('Content.zip'));
         }
 
     }

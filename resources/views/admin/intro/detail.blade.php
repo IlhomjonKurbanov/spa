@@ -20,7 +20,14 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Tên</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="name" placeholder="Điền tên của menu con" value="{{$intro->name}}">
+                        <input type="text" class="form-control" name="name" placeholder="Điền tên" value="{{$intro->name}}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Title</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="title" placeholder="Điền title" value="{{$intro->title}}">
                     </div>
                 </div>
                 <input type="hidden" name="id" value="{{$intro->id}}" >

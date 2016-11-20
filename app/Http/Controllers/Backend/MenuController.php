@@ -193,19 +193,21 @@ class MenuController extends AdminController
         $main =  ($request->file('main') && $request->file('main')->isValid()) ? $this->saveImage($request->file('main')) : '';
 
 
-        $subMenuCount = DB::table('sub_menus')->where('parent', $menu)->where('parent_type', $menuType)->count();
+        $subMenuCount = SubMenu::where('parent', $menu)->where('parent_type', $menuType)->count();
 
-        $contentCount = DB::table('contents')->where('menu', $menu)->where('menu_type', $menuType)->count();
+        $contentCount = Content::where('menu', $menu)->where('menu_type', $menuType)->count();
 
         $newOrder = $subMenuCount + $contentCount + 1;
 
 
         if($menuType == 1) {
-            if (!File::exists('Menu/' . $menu . '/' . $newOrder)) {
-                File::makeDirectory('Menu/' . $menu . '/' . $newOrder);
+            $orderMenu = Menu::find($menu)->order;
+
+            if (!File::exists('Menu/' . $orderMenu . '/' . $newOrder)) {
+                File::makeDirectory('Menu/' . $orderMenu . '/' . $newOrder);
             }
 
-            $path = $menu;
+            $path = $orderMenu;
             $rank = 1;
 
         } else {
@@ -245,38 +247,45 @@ class MenuController extends AdminController
             ];
 
             $subMenuNames = SubMenu::where('parent', $menu)->where('parent_type', $menuType)->pluck('name', 'order')->toArray();
+            $contentNames = Content::where('menu', $menu)->where('menu_type', $menuType)->pluck('name', 'order')->toArray();
+
+
+            $names = $subMenuNames + $contentNames;
+
 
             if($menuType == 1) {
             $menuContent = [
                 'type' => 'menu',
                 'name' => Menu::find($menu)->name,
                 'childNumber' => $newOrder,
-                'childNames' => $subMenuNames
+                'childNames' => $names
             ]; } else {
                 $menuContent = [
                     'type' => 'menu',
                     'name' => SubMenu::find($menu)->name,
                     'childNumber' => $newOrder,
-                    'childNames' => $subMenuNames
+                    'childNames' => $names
                 ];
             }
 
+
+
             if($menuType == 1) {
 
-                File::put(public_path('Menu/' . $menu . '/Description.txt'), json_encode($menuContent), true);
+                File::put(public_path('Menu/' . $orderMenu . '/Description.txt'), json_encode($menuContent), true);
 
-                File::put(public_path('Menu/' . $menu . '/' . $newOrder . '/Description.txt'), json_encode($content), true);
+                File::put(public_path('Menu/' . $orderMenu . '/' . $newOrder . '/Description.txt'), json_encode($content), true);
 
                 if (!empty($icon)) {
-                    File::copy(public_path('files/' . $icon), public_path('Menu/' . $menu . '/' . $newOrder . '/icon.png'));
+                    File::copy(public_path('files/' . $icon), public_path('Menu/' . $orderMenu . '/' . $newOrder . '/icon.png'));
                 }
 
                 if (!empty($icon_hover)) {
-                    File::copy(public_path('files/' . $icon_hover), public_path('Menu/' . $menu . '/' . $newOrder . '/icon-hover.png'));
+                    File::copy(public_path('files/' . $icon_hover), public_path('Menu/' . $orderMenu . '/' . $newOrder . '/icon-hover.png'));
                 }
 
                 if (!empty($main)) {
-                    File::copy(public_path('files/' . $main), public_path('Menu/' . $menu . '/' . $newOrder . '/main.png'));
+                    File::copy(public_path('files/' . $main), public_path('Menu/' . $orderMenu . '/' . $newOrder . '/main.png'));
                 }
             } else {
                 File::put(public_path('Menu/' . $path . '/Description.txt'), json_encode($menuContent), true);
@@ -370,7 +379,7 @@ class MenuController extends AdminController
 
         if($menuType == 1)
         {
-            $path = Menu::find($menu)->path;
+            $path = Menu::find($menu)->order;
             $rank = 1;
 
         } else {
@@ -387,13 +396,15 @@ class MenuController extends AdminController
 
             $contentCount = DB::table('contents')->where('menu', $menu)->where('menu_type', $menuType)->count();
 
-            $order = $subMenuCount + $contentCount + 1;
+            $newOrder = $subMenuCount + $contentCount + 1;
+
+
 
             DB::beginTransaction();
 
 
-            if (!File::exists('Menu/' . $path . '/' . $order)) {
-                File::makeDirectory('Menu/' . $path . '/' . $order);
+            if (!File::exists('Menu/' . $path . '/' . $newOrder)) {
+                File::makeDirectory('Menu/' . $path . '/' . $newOrder);
             }
 
 
@@ -417,8 +428,11 @@ class MenuController extends AdminController
                 'image' => json_encode($imageLink),
                 'main' => $main,
                 'content' => $content,
-                'path' => $path .'/'. $order,
-                'rank' => $rank + 1
+                'path' => $path .'/'. $newOrder,
+                'rank' => $rank + 1,
+                'order' => $newOrder,
+                'title' => $title,
+                'name' => $name
             ]);
 
             $content = [
@@ -427,18 +441,49 @@ class MenuController extends AdminController
                 'content' => $content,
             ];
 
+            $subMenuNames = SubMenu::where('parent', $menu)->where('parent_type', $menuType)->pluck('name', 'order')->toArray();
+
+            $contentNames = Content::where('menu', $menu)->where('menu_type', $menuType)->pluck('name', 'order')->toArray();
+
+            $names = $subMenuNames + $contentNames;
+
+            if($menuType == 1) {
+                $menuContent = [
+                    'type' => 'menu',
+                    'name' => Menu::find($menu)->name,
+                    'childNumber' => $newOrder,
+                    'childNames' => $names
+                ]; } else {
+                $menuContent = [
+                    'type' => 'menu',
+                    'name' => SubMenu::find($menu)->name,
+                    'childNumber' => $newOrder,
+                    'childNames' => $names
+                ];
+            }
+
+
             $description = ['type'=>'detail', 'layoutType'=>$detailType];
 
-            File::put(public_path('Menu/' . $path . '/'.$order.'/Description.txt'), json_encode($description), true);
+            if($menuType == 1) {
 
-            File::put(public_path('Menu/' . $path . '/'.$order.'/Content.txt'), json_encode($content), true);
+                $orderMenu = Menu::find($menu)->order;
+
+                File::put(public_path('Menu/' .$orderMenu . '/Description.txt'), json_encode($menuContent), true);
+            } else {
+                File::put(public_path('Menu/' . $path . '/Description.txt'), json_encode($menuContent), true);
+            }
+
+            File::put(public_path('Menu/' . $path . '/'.$newOrder.'/Description.txt'), json_encode($description), true);
+
+            File::put(public_path('Menu/' . $path . '/'.$newOrder.'/Content.txt'), json_encode($content), true);
 
             if (!empty($icon)) {
-                File::copy(public_path('files/' . $icon), public_path('Menu/' . $path . '/' . $order . '/icon.png'));
+                File::copy(public_path('files/' . $icon), public_path('Menu/' . $path . '/' . $newOrder . '/icon.png'));
             }
 
             if (!empty($main)) {
-                File::copy(public_path('files/' . $main), public_path('Menu/' . $path . '/' . $order . '/main.png'));
+                File::copy(public_path('files/' . $main), public_path('Menu/' . $path . '/' . $newOrder . '/main.png'));
             }
 
 
@@ -601,37 +646,45 @@ class MenuController extends AdminController
 
             $parentMenu = SubMenu::where('id', $menu)->first()->parent;
 
-            $subMenuNames = SubMenu::where('parent', $parentMenu)->pluck('name')->all();
+            $parentMenuType = SubMenu::where('id', $menu)->first()->parent_type;
+
+            $subMenuNames = SubMenu::where('parent', $parentMenu)->where('parent_type', $parentMenuType)->pluck('name', 'order')->toArray();
+
+            $contentNames = Content::where('menu', $parentMenu)->where('menu_type', $parentMenuType)->pluck('name', 'order')->toArray();
+
+            $names = $subMenuNames + $contentNames;
 
             $menuContent = [
                 'type' => 'menu',
                 'name' => Menu::find($parentMenu)->name,
                 'childNumber' => $newOrder,
-                'childNames' => $subMenuNames
+                'childNames' => $names
             ];
 
-            if (!File::exists('Menu/'.$parentMenu.'/'.$newOrder))
+            $parentMenuOrder = Menu::find($parentMenu)->order;
+
+            if (!File::exists('Menu/'.$parentMenuOrder.'/'.$newOrder))
             {
-                File::makeDirectory('Menu/'.$parentMenu.'/'.$newOrder);
+                File::makeDirectory('Menu/'.$parentMenuOrder.'/'.$newOrder);
             }
 
-            File::put(public_path('Menu/'.$parentMenu.'/Description.txt'), json_encode($menuContent), true);
+            File::put(public_path('Menu/'.$parentMenuOrder.'/Description.txt'), json_encode($menuContent), true);
 
-            File::put(public_path('Menu/'.$parentMenu.'/'.$newOrder.'/Description.txt'), json_encode($content), true);
+            File::put(public_path('Menu/'.$parentMenuOrder.'/'.$newOrder.'/Description.txt'), json_encode($content), true);
 
             if(!empty($icon))
             {
-            File::copy(public_path('files/'.$icon), public_path('Menu/'.$parentMenu.'/'.$newOrder.'/icon.png'));
+            File::copy(public_path('files/'.$icon), public_path('Menu/'.$parentMenuOrder.'/'.$newOrder.'/icon.png'));
             }
 
             if(!empty($icon_hover))
             {
-                File::copy(public_path('files/'.$icon_hover), public_path('Menu/'.$parentMenu.'/'.$newOrder.'/icon-hover.png'));
+                File::copy(public_path('files/'.$icon_hover), public_path('Menu/'.$parentMenuOrder.'/'.$newOrder.'/icon-hover.png'));
             }
 
             if(!empty($main))
             {
-                File::copy(public_path('files/'.$main), public_path('Menu/'.$parentMenu.'/'.$newOrder.'/main.png'));
+                File::copy(public_path('files/'.$main), public_path('Menu/'.$parentMenuOrder.'/'.$newOrder.'/main.png'));
             }
 
         } catch(\Exception $ex)
@@ -743,21 +796,62 @@ class MenuController extends AdminController
 
         try {
 
+            $localImageLink = [];
+
+            if(!empty($imageLink)) {
+                $i = 0;
+                foreach($imageLink as $itemImage) {
+                    $i++;
+                    File::copy(public_path('files/' . $itemImage), public_path('Menu/' . $path  . '/'.$i.'.png'));
+
+                    $localImageLink[] = $i.'.png';
+                }
+            }
 
 
             $content->update($data);
 
-            $content = [
+            $contentFile = [
                 'images' =>json_encode($localImageLink),
                 'title' => $data['title'],
                 'content' => $data['content'],
             ];
 
+            $subMenuNames = SubMenu::where('parent', $content->menu)->where('parent_type', $content->menu_type)->pluck('name', 'order')->toArray();
+
+            $contentNames = Content::where('menu', $content->menu)->where('menu_type', $content->menu_type)->pluck('name', 'order')->toArray();
+
+            $names = $subMenuNames + $contentNames;
+
+            if($content->menu_type == 1) {
+                $menuContent = [
+                    'type' => 'menu',
+                    'name' => Menu::find($content->menu)->name,
+                    'childNumber' => $content->order,
+                    'childNames' => $names
+                ]; } else {
+                $menuContent = [
+                    'type' => 'menu',
+                    'name' => SubMenu::find($content->menu)->name,
+                    'childNumber' => $content->order,
+                    'childNames' => $names
+                ];
+            }
+
+            $menuOrder = Menu::find($content->menu)->order;
+
+            if($content->menu_type == 1) {
+
+                File::put(public_path('Menu/' . $menuOrder . '/Description.txt'), json_encode($menuContent), true);
+            } else {
+                File::put(public_path('Menu/' . $path . '/Description.txt'), json_encode($menuContent), true);
+            }
+
             $description = ['type'=>'detail', 'layoutType'=>$detailType];
 
             File::put(public_path('Menu/' . $path .'/Description.txt'), json_encode($description), true);
 
-            File::put(public_path('Menu/' . $path . '/Content.txt'), json_encode($content), true);
+            File::put(public_path('Menu/' . $path . '/Content.txt'), json_encode($contentFile), true);
 
             if (!empty($icon)) {
                 File::copy(public_path('files/' . $icon), public_path('Menu/' . $path . '/icon.png'));

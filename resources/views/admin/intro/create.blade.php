@@ -25,6 +25,13 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Tên</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="name" placeholder="Điền tên">
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="col-md-3 control-label">Nội dung</label>
                     <div class="col-md-4">
                         <textarea type="text" class="form-control" name="content"></textarea>
