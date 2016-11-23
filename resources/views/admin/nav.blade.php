@@ -73,10 +73,16 @@
                         </a>
                     </li>
                     <li class="nav-item  ">
+                        <a href="{{url('view-intro-outside')}}" class="nav-link ">
+                            <span class="title">Sửa giới thiệu chung</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
                         <a href="{{url('create-intro')}}" class="nav-link ">
                             <span class="title">Thêm</span>
                         </a>
                     </li>
+
 
                 </ul>
             </li>

@@ -633,7 +633,7 @@ class MenuController extends AdminController
         DB::beginTransaction();
 
         try {
-            $subMenu->update($data);
+             $subMenu->update($data);
 
             $content = [
                 'type' => 'sub-menu',
@@ -652,25 +652,56 @@ class MenuController extends AdminController
 
             $contentNames = Content::where('menu', $parentMenu)->where('menu_type', $parentMenuType)->pluck('name', 'order')->toArray();
 
+            $subMenuCount = SubMenu::where('parent', $parentMenu)->where('parent_type', $parentMenuType)->count();
+
+            $contentCount =  Content::where('menu', $parentMenu)->where('menu_type', $parentMenuType)->count();
+
             $names = $subMenuNames + $contentNames;
 
-            $menuContent = [
-                'type' => 'menu',
-                'name' => Menu::find($parentMenu)->name,
-                'childNumber' => $newOrder,
-                'childNames' => $names
-            ];
+            $parentMenuOrder = '';
 
-            $parentMenuOrder = Menu::find($parentMenu)->order;
+            if($parentMenuType == 1)
+            {
+                $menuContent = [
+                    'type' => 'menu',
+                    'name' => Menu::find($parentMenu)->name,
+                    'childNumber' => $subMenuCount + $contentCount,
+                    'childNames' => $names
+                ];
+
+                $parentMenuOrder = Menu::find($parentMenu)->order;
+
+                File::put(public_path('Menu/'.$parentMenuOrder.'/Description.txt'), json_encode($menuContent), true);
+
+
+            } else if($parentMenuType == 2) {
+                $menuContent = [
+                    'type' => 'sub-menu',
+                    'name' => SubMenu::find($parentMenu)->name,
+                    'childNumber' => $subMenuCount + $contentCount,
+                    'childNames' => $names
+                ];
+
+                $parentMenuOrder = SubMenu::find($parentMenu)->path;
+
+                File::put(public_path('Menu/'.$parentMenuOrder.'/Description.txt'), json_encode($menuContent), true);
+            }
+
 
             if (!File::exists('Menu/'.$parentMenuOrder.'/'.$newOrder))
             {
                 File::makeDirectory('Menu/'.$parentMenuOrder.'/'.$newOrder);
             }
 
-            File::put(public_path('Menu/'.$parentMenuOrder.'/Description.txt'), json_encode($menuContent), true);
+
 
             File::put(public_path('Menu/'.$parentMenuOrder.'/'.$newOrder.'/Description.txt'), json_encode($content), true);
+
+            $updatedSubMenu = SubMenu::find($menu);
+
+            $icon = $updatedSubMenu->icon;
+            $icon_hover = $updatedSubMenu->icon_hover;
+            $main = $updatedSubMenu->main;
 
             if(!empty($icon))
             {
@@ -823,24 +854,32 @@ class MenuController extends AdminController
 
             $names = $subMenuNames + $contentNames;
 
+            $subMenuCount = DB::table('sub_menus')->where('parent', $content->menu)->where('parent_type', $content->menu_type)->count();
+
+            $contentCount = DB::table('contents')->where('menu', $content->menu)->where('menu_type', $content->menu_type)->count();
+
+            $childNumber = $subMenuCount + $contentCount;
+
             if($content->menu_type == 1) {
                 $menuContent = [
                     'type' => 'menu',
                     'name' => Menu::find($content->menu)->name,
-                    'childNumber' => $content->order,
+                    'childNumber' => $childNumber,
                     'childNames' => $names
                 ]; } else {
                 $menuContent = [
                     'type' => 'menu',
                     'name' => SubMenu::find($content->menu)->name,
-                    'childNumber' => $content->order,
+                    'childNumber' => $childNumber,
                     'childNames' => $names
                 ];
             }
 
-            $menuOrder = Menu::find($content->menu)->order;
+
 
             if($content->menu_type == 1) {
+
+                $menuOrder = Menu::find($content->menu)->order;
 
                 File::put(public_path('Menu/' . $menuOrder . '/Description.txt'), json_encode($menuContent), true);
             } else {
@@ -852,6 +891,12 @@ class MenuController extends AdminController
             File::put(public_path('Menu/' . $path .'/Description.txt'), json_encode($description), true);
 
             File::put(public_path('Menu/' . $path . '/Content.txt'), json_encode($contentFile), true);
+
+            $contentUpdated = Content::find($id);
+
+            $icon = $contentUpdated->icon;
+
+            $main = $contentUpdated->main;
 
             if (!empty($icon)) {
                 File::copy(public_path('files/' . $icon), public_path('Menu/' . $path . '/icon.png'));
@@ -966,7 +1011,9 @@ class MenuController extends AdminController
 
         $rank = $content->rank;
 
-        $menusBiggers = SubMenu::where('parent', $menu)->where('order', '>', $menu->order)->where('rank', $rank)->get();
+        $contentOrder = $content->order;
+
+        $menusBiggers = SubMenu::where('parent', $menu)->where('order', '>', $contentOrder)->where('rank', $rank)->get();
 
         foreach ($menusBiggers as $menusBigger)
         {

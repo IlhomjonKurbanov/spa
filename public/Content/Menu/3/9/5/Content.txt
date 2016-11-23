@@ -1,0 +1,1 @@
+{"images":"[\"1.png\"]","title":"Chi ph\u00ed \u0111i\u1ec1u tr\u1ecb","content":"<5 n\u1ed1t: 600,000vnd\r\n>= 10 n\u1ed1t: 1,800,000vnd\r\n>= 15 n\u1ed1t: 3,000,000vnd\r\n>= 20 n\u1ed1t: 4,200,000vnd\r\n"}

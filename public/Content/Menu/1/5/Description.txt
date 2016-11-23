@@ -1,0 +1,1 @@
+{"type":"menu","name":"S\u1eb9o N\u1eb7ng","childNumber":7,"childNames":{"1":"C\u00f4ng ngh\u1ec7","2":"T\u1ea5n Su\u1ea5t \u0110i\u1ec1u Tr\u1ecb","3":"T\u00e1c d\u1ee5ng","4":"Th\u1eddi Gian \u0110i\u1ec1u Tr\u1ecb","5":"Chi ph\u00ed","6":"S\u1ea3n ph\u1ea9m d\u00f9ng t\u1ea1i nh\u00e0","7":"H\u00ecnh \u1ea3nh tr\u01b0\u1edbc sau"}}

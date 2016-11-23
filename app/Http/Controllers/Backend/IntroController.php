@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Intro;
+use App\IntroOutside;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use File;
+use DB;
 
 class IntroController extends AdminController
 {
@@ -25,12 +27,19 @@ class IntroController extends AdminController
         return view('admin.intro.list', compact('intros'));
     }
 
-    public function getIntroOutside($id)
+    public function getIntrosOutside()
+    {
+        $intros = IntroOutside::all();
+
+        return view('admin.intro.list_outside', compact('intros'));
+    }
+
+    public function getIntroOutside()
     {
 
-        $intro = Intro::find($id);
+        $intro = IntroOutside::all()->first();
 
-        return view('admin.intro.outside_detail', compact('intro'));
+        return view('admin.intro.detail_outside', compact('intro'));
 
     }
 
@@ -38,16 +47,84 @@ class IntroController extends AdminController
     {
         $name = $request->input('name');
 
-        $icon_sidebar =  ($request->file('icon_sidebar') && $request->file('icon_sidebar')->isValid()) ? $this->saveImage($request->file('icon_sidebar')) : '';
-        $icon_sidebar_hover =  ($request->file('icon_sidebar_hover') && $request->file('icon_sidebar_hover')->isValid()) ? $this->saveImage($request->file('icon_sidebar_hover')) : '';
+        $icon =  ($request->file('icon') && $request->file('icon')->isValid()) ? $this->saveImage($request->file('icon')) : '';
         $main =  ($request->file('main') && $request->file('main')->isValid()) ? $this->saveImage($request->file('main')) : '';
-        $thumb =  ($request->file('thumbnail') && $request->file('thumbnail')->isValid()) ? $this->saveImage($request->file('thumbnail')) : '';
+
+        try {
+            DB::beginTransaction();
+
+            IntroOutside::create([
+                'name' => $name,
+                'icon' => $icon,
+                'main' => $main
+            ]);
+        } catch(\Exception $ex)
+        {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Thêm nội dung thất bại');
+
+        }
+
+        if(!empty($icon))
+        {
+            File::copy(public_path('files/'.$icon), public_path('Intro/icon.png'));
+        }
+
+        if(!empty($main))
+        {
+            File::copy(public_path('files/'.$main), public_path('Intro/main.png'));
+        }
+
+        DB::commit();
+
+        return redirect()->back()->with('success', 'Thêm nội dung thành công');
 
     }
 
     public function updateIntroOutside(Request $request)
     {
+        $intro = IntroOutside::all()->first();
 
+        $data = $request->all();
+
+        if($request->file('icon') && $request->file('icon')->isValid()) {
+            $data['icon'] =  $this->saveImage($request->file('icon'));
+        };
+
+        if($request->file('main') && $request->file('main')->isValid()) {
+            $data['main'] =  $this->saveImage($request->file('main'));
+        };
+
+        $intro->update($data);
+
+        $introUpdated = IntroOutside::all()->first();
+
+        $icon = $introUpdated->icon;
+
+        $main = $introUpdated->main;
+
+        $childNumber = Intro::all()->count();
+
+        $childNames = Intro::all()->pluck('name', 'order')->toArray();
+
+        $content = [
+            'type' => 'Intro',
+            'name' => $data['name'],
+            'childNumber' => $childNumber,
+            'childNames' =>$childNames
+        ];
+
+        File::put(public_path('Intro/Description.txt'), json_encode($content), true);
+
+        if (!empty($icon)) {
+            File::copy(public_path('files/' . $icon), public_path('Intro/icon.png'));
+        }
+
+        if (!empty($main)) {
+            File::copy(public_path('files/' . $main), public_path('Intro/main.png'));
+        }
+
+        return redirect()->back()->with('success', 'Cập nhật nội dung thành công');
     }
 
 
@@ -122,7 +199,7 @@ class IntroController extends AdminController
                 'content' => $content,
                 'order' => $order +1,
                 'name' => $name,
-                'title' => $title
+                'title' => $title,
             ]);
 
             if(!\File::exists(public_path('Intro/')))
@@ -157,7 +234,7 @@ class IntroController extends AdminController
 
             $menuContent = [
                 'type' => 'Intro',
-                'name' => $name,
+                'name' => IntroOutside::all()->first()->name,
                 'childNumber' => Intro::all()->count(),
                 'childNames' => Intro::all()->pluck('name', 'order')->toArray()
             ];
@@ -289,7 +366,7 @@ class IntroController extends AdminController
 
             $menuContent = [
                 'type' => 'Intro',
-                'name' => $data['name'],
+                'name' => IntroOutside::all()->first()->name,
                 'childNumber' => Intro::all()->count(),
                 'childNames' => Intro::all()->pluck('name', 'order')->toArray()
             ];
@@ -299,6 +376,12 @@ class IntroController extends AdminController
             \File::put(public_path('Intro/' . $order .'/Description.txt'), json_encode($description), true);
 
             \File::put(public_path('Intro/' . $order . '/Content.txt'), json_encode($content), true);
+
+            $updated = Intro::find($id);
+
+            $icon = $updated->icon;
+
+            $main = $updated->main;
 
             if (!empty($icon)) {
                 \File::copy(public_path('files/' . $icon), public_path('Intro/' . $order . '/icon.png'));
@@ -329,6 +412,8 @@ class IntroController extends AdminController
         foreach($biggerIntros as $biggerIntro)
         {
             $biggerIntro->update(['order' => $biggerIntro->order - 1]);
+
+            File::deleteDirectory('Intro/'.$order);
         }
 
         $intro->delete();

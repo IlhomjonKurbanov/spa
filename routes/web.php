@@ -44,6 +44,8 @@ Route::get('create-menu', 'Backend\MenuController@createMenuView');
 
 Route::get('view-menu/{id}', 'Backend\MenuController@getMenuDetail');
 
+Route::get('view-intro-outside', 'Backend\IntroController@getIntroOutside');
+
 Route::get('view-sub-menu/{id}', 'Backend\MenuController@getSubMenuDetail');
 
 Route::get('view-content/{id}', 'Backend\MenuController@getContentDetail');
@@ -74,6 +76,8 @@ Route::post('create_video_form', 'Backend\VideoController@createVideo');
 Route::post('create_intro_form', 'Backend\IntroController@createIntro');
 
 Route::post('update_sub_menu_form', 'Backend\MenuController@updateSubMenu');
+
+Route::post('update_intro_outside_form', 'Backend\IntroController@updateIntroOutside');
 
 Route::post('create_content_form', 'Backend\MenuController@createContent');
 

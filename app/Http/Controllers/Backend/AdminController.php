@@ -47,11 +47,13 @@ class AdminController extends Controller
 
     public function makeZip()
     {
-        if(!cache()->has('version'))
+        if(!cache()->has('app-version'))
         {
             cache()->forever('app-version', '1');
         } else {
             $oldVersion = cache()->get('app-version');
+
+            cache()->forget('app-version');
 
             cache()->forever('app-version', $oldVersion + 1);
         }

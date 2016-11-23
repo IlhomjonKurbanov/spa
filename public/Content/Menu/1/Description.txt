@@ -1,1 +1,1 @@
-{"type":"menu","name":"S\u1eb9o l\u1ed7 ch\u00e2n l\u00f4ng","childNumber":3,"childNames":{"1":"M\u1ee5n \u0111\u1ea7u \u0111en, \u0111\u1ea7u tr\u1eafng","2":"M\u1ee5n s\u01b0ng vi\u00eam","3":"M\u1ee5n nang"}}
+{"type":"menu","name":"S\u1eb9o L\u1ed7 Ch\u00e2n L\u00f4ng","childNumber":6,"childNames":{"3":"S\u1eb9o Nh\u1eb9","4":"S\u1eb9o Trung B\u00ecnh","5":"S\u1eb9o N\u1eb7ng","6":"L\u1ed7 Ch\u00e2n L\u00f4ng","1":"S\u1eb9o L\u1ed7 Ch\u00e2n L\u00f4ng","2":"Nguy\u00ean Nh\u00e2n"}}
