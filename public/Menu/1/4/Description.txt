@@ -1,0 +1,1 @@
+{"type":"menu","name":"S\u1eb9o Trung B\u00ecnh","childNumber":7,"childNames":{"1":"C\u00f4ng ngh\u1ec7","2":"T\u1ea7n su\u1ea5t \u0111i\u1ec1u tr\u1ecb","3":"T\u00e1c d\u1ee5ng ","4":"Li\u1ec7u tr\u00ecnh \u0111i\u1ec1u tr\u1ecb","5":"Chi ph\u00ed","6":"SP b\u1ed5 sung","7":"H\u00ecnh \u1ea2nh Th\u1ef1c T\u1ebf"}}

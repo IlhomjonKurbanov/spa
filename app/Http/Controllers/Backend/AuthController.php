@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Account;
+use Illuminate\Http\Request;
 use App\User;
 use Exception;
 use Laravel\Socialite\Facades\Socialite;
@@ -45,6 +47,24 @@ class AuthController
      * Logout g+.
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
+    public function auth(Request $request)
+    {
+        $username = $request->input('username');
+
+        $password = $request->input('password');
+
+        if($username == 'donga' && $password == 'donga123456')
+        {
+            $user = User::all()->first();
+            auth('backend')->login($user);
+
+            return redirect()->to(url('/'));
+        } else {
+
+            return redirect()->back()->with('error-1', 'Sai tên đăng nhập hoặc mật khẩu');
+        }
+    }
+
     public function logout()
     {
         auth('backend')->logout();

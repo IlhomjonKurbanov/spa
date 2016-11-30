@@ -87,7 +87,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-default">
                             <li>
-                                <a href="page_user_login_1.html">
+                                <a href="{{ url('admin/logout') }}">
                                     <i class="icon-key"></i> Đăng xuất </a>
                             </li>
                         </ul>

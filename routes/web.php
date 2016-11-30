@@ -12,7 +12,9 @@
 */
 
 #Admin Routes
-Route::get('admin/login', 'Backend\AuthController@redirectToGoogle');
+Route::get('admin/login', function() {
+    return view('admin.login');
+});
 Route::get('admin/logout', 'Backend\AuthController@logout');
 Route::get('admin/callback', 'Backend\AuthController@handleGoogleCallback');
 
@@ -35,6 +37,8 @@ Route::get('list-intro', 'Backend\IntroController@getIntros');
 Route::get('create-intro', function (){
     return view('admin.intro.create');
 });
+
+Route::post('auth', 'Backend\AuthController@auth');
 
 Route::get('list-sub-menu/{menu}/{menuType}', 'Backend\MenuController@getSubMenus');
 
